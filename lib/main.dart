@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:greengen/helper/theme.dart';
 import 'package:greengen/screens/login.dart';
-import 'package:greengen/screens/upload_image.dart';
+import 'package:greengen/screens/img_upload_scrn.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,14 +29,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: Color(0XFF0076D32),
-        primaryColorLight: Color(0XFF7db841),
-        primarySwatch: MaterialColor(0XFF076D32, color),
+        primaryColor: const Color(0xff0076d32),
+        primaryColorLight: const Color(0XFF7db841),
+        primarySwatch: const MaterialColor(0XFF076D32, color),
         // scaffoldBackgroundColor: Colors.white,
-        textTheme:  TextTheme(
-          titleMedium: textTheme['titleMedium'],
-          bodyMedium: textTheme['bodyMedium']
-          ),
+        textTheme: TextTheme(
+            titleMedium: textTheme['titleMedium'],
+            bodyMedium: textTheme['bodyMedium']),
         // This is the theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see
@@ -52,10 +51,10 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0XFF076D32)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0XFF076D32)),
         useMaterial3: true,
       ),
-      home: Login(),
+      home: const Login(),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greengen/screens/upload_image.dart';
+import 'package:greengen/screens/img_upload_scrn.dart';
 import 'package:greengen/widgets/container_button.dart';
 import 'package:greengen/widgets/input_field.dart';
 
@@ -14,6 +14,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
@@ -30,7 +31,7 @@ class _LoginState extends State<Login> {
                   fit: BoxFit.contain,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               Container(
@@ -40,28 +41,28 @@ class _LoginState extends State<Login> {
                 child: Column(
                   children: [
                     // Text("Portale Greengen",style: Theme.of(context).textTheme.titleMedium,),
-                    Text("Portale Greengen",
+                    const Text("Portale Greengen",
                         style: TextStyle(
                           fontSize: 18.0,
                           // fontFamily: "Poppins",
                           color: Color(0XFF076D32),
                         )),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     inputField(
                         context: context,
                         hintText: "pasquale.greengen@gmail.com",
                         controller: emailController),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     inputField(
                         context: context,
                         hintText: "*******",
-                        controller: emailController,
+                        controller: passwordController,
                         obscureText: true),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Center(
@@ -72,7 +73,8 @@ class _LoginState extends State<Login> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ImageUploadScreen()),
+                                  builder: (context) =>
+                                      const ImageUploadScreen()),
                             );
                           }),
                     ),

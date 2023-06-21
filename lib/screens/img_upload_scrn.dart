@@ -1,12 +1,71 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ImageUploadScreen extends StatefulWidget {
+  const ImageUploadScreen({super.key});
+
   @override
   _ImageUploadScreenState createState() => _ImageUploadScreenState();
 }
 
 class _ImageUploadScreenState extends State<ImageUploadScreen> {
   String _selectedOption = '';
+  // File? imageFile;
+  List<String> pickedImages = [];
+
+  Widget _buildImageWidget(int index) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              child: Image.file(
+                File(pickedImages[index]),
+                fit: BoxFit.contain,
+              ),
+            );
+          },
+        );
+      },
+      child: SizedBox(
+        width: 50,
+        height: 50,
+        child: Image.file(
+          File(pickedImages[index]),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  _getFromGallery() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      // maxWidth: 1800,
+      // maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        File imageFile = File(pickedFile.path);
+        pickedImages.add(imageFile.path);
+        print(imageFile.path);
+      });
+    }
+  }
+
+  // _getFromCamera() async {
+  //   PickedFile? pickedFile = await ImagePicker().getImage(
+  //     source: ImageSource.camera,
+  //     maxWidth: 1800,
+  //     maxHeight: 1800,
+  //   );
+  //   if (pickedFile != null) {
+  //     File imageFile = File(pickedFile.path);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +82,16 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   width: 100,
                   // height: 32,
                 ),
-                Spacer(),
-                Text(
+                const Spacer(),
+                const Text(
                   'PASQUALE',
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.white,
                       fontWeight: FontWeight.bold),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
                   child: Icon(
                     Icons.person,
                     color: Colors.white,
@@ -43,34 +102,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           ),
           centerTitle: true,
           automaticallyImplyLeading: false,
-          // leading: Container(
-          //   width: MediaQuery.of(context).size.width*0.8,
-          //   margin: EdgeInsets.only(left: 16),
-          //   child: Image.asset(
-          //     'assets/pictures/logo.png',
-          //     width:50,
-          //     height: 32,
-          //   ),
-          // ),
         ),
-        // AppBar(
-        //   title: Text('Image Upload'),
-        //   actions: [
-        //     IconButton(
-        //       icon: Icon(
-        //         Icons.file_upload,
-        //         color: Theme.of(context).primaryColorLight,
-        //       ),
-        //       onPressed: () {
-        //         _showUploadOptions();
-        //       },
-        //     ),
-        //     // Padding(
-        //     //   padding: EdgeInsets.only(right: 16.0),
-        //     //   child: Text(_selectedOption), // Display selected value in app bar
-        //     // ),
-        //   ],
-        // ),
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: Container(
@@ -80,10 +112,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   children: [
                     Text(
                       "Immagini Anti Opera",
-                      // style: Theme.of(context).textTheme.bodyMedium,
                       style: TextStyle(
                         fontSize: 15.0,
-                        // fontFamily: "Poppins",
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
@@ -101,7 +131,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Row(
@@ -109,9 +139,15 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        _showUploadOptions();
+                        // _showUploadOptions();
+                        _getFromGallery();
                       },
                       child: Container(
+                        height: 20,
+                        width: 80,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Theme.of(context).primaryColorLight)),
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
@@ -121,24 +157,19 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                                 color: Theme.of(context).primaryColorDark),
                           ),
                         ),
-                        height: 20,
-                        width: 80,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).primaryColorLight)),
                       ),
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
-                Container(
+                const SizedBox(
                   height: 30,
                   child: TextField(
                     // textAlignVertical: TextAlignVertical.center,
 
-                    style: TextStyle(fontSize: 8, color: Colors.grey),
+                    style: TextStyle(fontSize: 10, color: Colors.grey),
                     decoration: InputDecoration(
                       hintText: 'Cerca Immagine',
                       border: OutlineInputBorder(
@@ -154,17 +185,20 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Container(
                   child: Expanded(
-                    child: GridView.count(
-                      crossAxisSpacing: 5,
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 5,
-                      children:
-                          List.generate(8, (index) => _buildImageWidget(index)),
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              mainAxisSpacing: 7,
+                              crossAxisSpacing: 7,
+                              crossAxisCount: 3),
+                      itemBuilder: ((context, index) =>
+                          _buildImageWidget(index)),
+                      itemCount: pickedImages.length,
                     ),
                   ),
                 ),
@@ -174,26 +208,19 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         ));
   }
 
-  Widget _buildImageWidget(int index) {
-    return Image.asset(
-      'assets/pictures/upload_image.png',
-      height: 50,
-    );
-  }
-
   void _showUploadOptions() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Upload Options'),
+          title: const Text('Upload Options'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   RadioListTile<String>(
-                    title: Text('Option 1'),
+                    title: const Text('Option 1'),
                     value: 'Option 1',
                     groupValue: _selectedOption,
                     onChanged: (value) {
@@ -203,7 +230,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     },
                   ),
                   RadioListTile<String>(
-                    title: Text('Option 2'),
+                    title: const Text('Option 2'),
                     value: 'Option 2',
                     groupValue: _selectedOption,
                     onChanged: (value) {
@@ -213,7 +240,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     },
                   ),
                   RadioListTile<String>(
-                    title: Text('Option 3'),
+                    title: const Text('Option 3'),
                     value: 'Option 3',
                     groupValue: _selectedOption,
                     onChanged: (value) {
@@ -231,7 +258,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
