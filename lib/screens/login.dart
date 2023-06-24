@@ -3,6 +3,8 @@ import 'package:greengen/screens/img_upload_scrn.dart';
 import 'package:greengen/widgets/container_button.dart';
 import 'package:greengen/widgets/input_field.dart';
 
+import '../model/user_model.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -13,6 +15,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
+    final getToken = UserModel();
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     return Scaffold(
@@ -69,7 +72,13 @@ class _LoginState extends State<Login> {
                       child: containerButton(
                           context: context,
                           text: "Accedi",
-                          onTap: () {
+                          onTap: () async {
+                            print(emailController.text);
+                            print(passwordController.text);
+
+                            await getToken.getToken(
+                                email: emailController.text,
+                                password: passwordController.text);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
