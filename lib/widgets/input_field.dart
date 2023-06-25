@@ -4,6 +4,7 @@ inputField({String? hintText, controller, context, obscureText = false}) {
   return Container(
     width: MediaQuery.of(context).size.width * 0.7,
     child: TextFormField(
+      controller: controller,
       style: Theme.of(context).textTheme.titleSmall,
       obscureText: obscureText,
       decoration: InputDecoration(

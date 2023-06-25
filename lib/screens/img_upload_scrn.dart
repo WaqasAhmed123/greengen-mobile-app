@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:greengen/model/img_upload.dart';
+import 'package:greengen/screens/all_users_scrn.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageUploadScreen extends StatefulWidget {
@@ -13,7 +15,8 @@ class ImageUploadScreen extends StatefulWidget {
 class _ImageUploadScreenState extends State<ImageUploadScreen> {
   String _selectedOption = '';
   // File? imageFile;
-  List<String> pickedImages = [];
+  List<String> pickedImagesPath = [];
+  List<File> images = [];
 
   Widget _buildImageWidget(int index) {
     return GestureDetector(
@@ -23,7 +26,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           builder: (BuildContext context) {
             return Dialog(
               child: Image.file(
-                File(pickedImages[index]),
+                File(pickedImagesPath[index]),
                 fit: BoxFit.contain,
               ),
             );
@@ -34,25 +37,55 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         width: 50,
         height: 50,
         child: Image.file(
-          File(pickedImages[index]),
+          File(pickedImagesPath[index]),
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  _getFromGallery() async {
-    XFile? pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      // maxWidth: 1800,
-      // maxHeight: 1800,
-    );
-    if (pickedFile != null) {
+  Future<void> _getFromGallery() async {
+    // List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
+    List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
+
+    if (pickedFiles.isNotEmpty) {
+      List<File> imageFiles = [];
+
+      for (var pickedFile in pickedFiles) {
+        final file = File(pickedFile.path);
+        imageFiles.add(file);
+        pickedImagesPath.add(file.path);
+        print(file.path);
+      }
+
       setState(() {
-        File imageFile = File(pickedFile.path);
-        pickedImages.add(imageFile.path);
-        print(imageFile.path);
+        images.addAll(imageFiles);
+        // images = imageFiles;
+        // images.addAll(imageFiles);
       });
+      print(images);
+      print(images.length);
+
+      if (await ImageUpload.uploadImage(
+              // token: token,
+              images: images,
+              // constructionSideId: 551,
+              folder: _selectedOption) ==
+          true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Image(s) Uploaded'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to Upload'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
@@ -83,12 +116,21 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   // height: 32,
                 ),
                 const Spacer(),
-                const Text(
-                  'PASQUALE',
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AllUsersScreen()),
+                    );
+                  },
+                  child: const Text(
+                    'PASQUALE',
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 8.0),
@@ -139,8 +181,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        // _showUploadOptions();
-                        _getFromGallery();
+                        _showUploadOptions();
+                        // _getFromGallery();
                       },
                       child: Container(
                         height: 20,
@@ -198,7 +240,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                               crossAxisCount: 3),
                       itemBuilder: ((context, index) =>
                           _buildImageWidget(index)),
-                      itemCount: pickedImages.length,
+                      // itemCount: images.length,
+                      itemCount: pickedImagesPath.length,
                     ),
                   ),
                 ),
@@ -220,8 +263,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   RadioListTile<String>(
-                    title: const Text('Option 1'),
-                    value: 'Option 1',
+                    title: const Text('ante'),
+                    value: 'ante',
                     groupValue: _selectedOption,
                     onChanged: (value) {
                       setState(() {
@@ -230,8 +273,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Option 2'),
-                    value: 'Option 2',
+                    title: const Text('cantiere'),
+                    value: 'cantiere',
                     groupValue: _selectedOption,
                     onChanged: (value) {
                       setState(() {
@@ -240,8 +283,18 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     },
                   ),
                   RadioListTile<String>(
-                    title: const Text('Option 3'),
-                    value: 'Option 3',
+                    title: const Text('post'),
+                    value: 'post',
+                    groupValue: _selectedOption,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedOption = value!;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('durante'),
+                    value: 'durante',
                     groupValue: _selectedOption,
                     onChanged: (value) {
                       setState(() {
@@ -254,12 +307,24 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             },
           ),
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close'),
+                ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    _getFromGallery();
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Upload'),
+                ),
+              ],
+            )
           ],
         );
       },

@@ -15,7 +15,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
-    final getToken = UserModel();
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     return Scaffold(
@@ -76,7 +75,7 @@ class _LoginState extends State<Login> {
                             print(emailController.text);
                             print(passwordController.text);
 
-                            await getToken.getToken(
+                            await UserModel.login(
                                 email: emailController.text,
                                 password: passwordController.text);
                             Navigator.push(
@@ -87,7 +86,12 @@ class _LoginState extends State<Login> {
                             );
                           }),
                     ),
-                    // TextButton(onPressed: (){}, child: Text(data))
+                    TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Reset password",
+                          style: TextStyle(color: Colors.blue, fontSize: 12),
+                        ))
                   ],
                 ),
               )
