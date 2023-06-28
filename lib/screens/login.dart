@@ -6,17 +6,25 @@ import 'package:greengen/widgets/input_field.dart';
 import '../model/user_model.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
@@ -33,68 +41,103 @@ class _LoginState extends State<Login> {
                   fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(
-                height: 50,
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               Container(
-                height: 300,
+                // height: 330,
                 width: MediaQuery.of(context).size.width * 0.8,
                 color: Colors.white,
                 child: Column(
                   children: [
-                    // Text("Portale Greengen",style: Theme.of(context).textTheme.titleMedium,),
-                    const Text("Portale Greengen",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          // fontFamily: "Poppins",
-                          color: Color(0XFF076D32),
-                        )),
+                    const Text(
+                      "Portale Greengen",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0XFF076D32),
+                      ),
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
-                    inputField(
-                        context: context,
-                        hintText: "pasquale.greengen@gmail.com",
-                        controller: emailController),
-                    const SizedBox(
-                      height: 15,
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          inputField(
+                            context: context,
+                            hintText: "pasquale.greengen@gmail.com",
+                            controller: emailController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter an email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          inputField(
+                            context: context,
+                            hintText: "*******",
+                            controller: passwordController,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a password';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                    inputField(
-                        context: context,
-                        hintText: "*******",
-                        controller: passwordController,
-                        obscureText: true),
                     const SizedBox(
                       height: 15,
                     ),
                     Center(
                       child: containerButton(
-                          context: context,
-                          text: "Accedi",
-                          onTap: () async {
-                            print(emailController.text);
-                            print(passwordController.text);
-
-                            await UserModel.login(
-                                email: emailController.text,
-                                password: passwordController.text);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
+                        context: context,
+                        text: "Accedi",
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (await UserModel.login(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                ) ==
+                                true) {
+                              await UserModel.saveEmail(
+                                  email: emailController.text);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
                                   builder: (context) =>
-                                      const ImageUploadScreen()),
-                            );
-                          }),
+                                      const ImageUploadScreen(),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Login Failed'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
                     ),
                     TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Reset password",
-                          style: TextStyle(color: Colors.blue, fontSize: 12),
-                        ))
+                      onPressed: () {},
+                      child: const Text(
+                        "Reset password",
+                        style: TextStyle(color: Colors.blue, fontSize: 12),
+                      ),
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

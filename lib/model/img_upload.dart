@@ -16,7 +16,10 @@ class ImageUpload {
     // String? token=await
     // Create the multipart request
     String apiUrl = 'https://www.crm-crisaloid.com/api/construction/images';
-    String token = await UserModel.getToken();
+    // String token = await UserModel.getUserCredentials();
+
+    final token = await UserModel.getToken();
+
     print(token);
     bool success = false;
 

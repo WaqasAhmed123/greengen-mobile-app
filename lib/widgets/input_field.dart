@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-inputField({String? hintText, controller, context, obscureText = false}) {
+inputField({String? hintText, controller, context, obscureText = false,validator}) {
   return Container(
     width: MediaQuery.of(context).size.width * 0.7,
     child: TextFormField(
+      validator: validator,
       controller: controller,
       style: Theme.of(context).textTheme.titleSmall,
       obscureText: obscureText,

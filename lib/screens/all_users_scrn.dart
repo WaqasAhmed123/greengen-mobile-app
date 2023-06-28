@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../model/all_users.dart';
 
 class AllUsersScreen extends StatefulWidget {
-  const AllUsersScreen({super.key});
+  const AllUsersScreen({Key? key}) : super(key: key);
+
   @override
-  State<AllUsersScreen> createState() => _AllUsersScreenState();
+  _AllUsersScreenState createState() => _AllUsersScreenState();
 }
 
 class _AllUsersScreenState extends State<AllUsersScreen> {
@@ -19,18 +20,13 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
     "STATO"
   ];
 
-  // final userData = [
-  //   "AFFATATO ROCCO",
-  //   "PUTIGNANO",
-  //   "S.C.S.CATALDO STRETTOLA n. 6",
-  //   "ARTURO DE MARCO",
-  //   "12/11",
-  //   "Saldo Enea In Attesa",
-  // ];
+  int limit = 10;
+  bool loadMore = true;
+  bool loadMoreButtonVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    return (Scaffold(
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         titleSpacing: 0,
@@ -41,15 +37,15 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
               Image.asset(
                 'assets/pictures/logo.png',
                 width: 100,
-                // height: 32,
               ),
               const Spacer(),
               const Text(
                 'PASQUALE',
                 style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                  fontSize: 10,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const Padding(
                 padding: EdgeInsets.only(left: 4.0),
@@ -64,15 +60,6 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        // leading: Container(
-        //   width: MediaQuery.of(context).size.width*0.8,
-        //   margin: EdgeInsets.only(left: 16),
-        //   child: Image.asset(
-        //     'assets/pictures/logo.png',
-        //     width:50,
-        //     height: 32,
-        //   ),
-        // ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -96,9 +83,15 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                   AsyncSnapshot<List<AllUsers>> snapshot) {
                 if (snapshot.hasData) {
                   final userList = snapshot.data!;
-                  // userList.map((e) => print(e.id));
-                  // for (var i in userList) {
-                  //   print(i.name);
+
+                  // loadMoreButtonVisible = true;
+
+                  // List<AllUsers> displayedUsers;
+                  // if (userList.length <= limit) {
+                  //   displayedUsers = userList;
+                  //   loadMore = false;
+                  // } else {
+                  //   displayedUsers = userList.sublist(0, limit);
                   // }
 
                   return SingleChildScrollView(
@@ -111,13 +104,12 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                         3: FixedColumnWidth(120),
                         4: FixedColumnWidth(120),
                         5: FixedColumnWidth(120),
-                        // for (int i = 0; i < tableTitleArr.length; i++)
-                        //   i: FixedColumnWidth(120)
                       },
                       children: [
                         TableRow(
                           decoration: const BoxDecoration(
-                              border: Border(bottom: BorderSide(width: 2.0))),
+                            border: Border(bottom: BorderSide(width: 2.0)),
+                          ),
                           children: tableTitleArr.map((title) {
                             return TableCell(
                               child: Padding(
@@ -134,7 +126,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                             );
                           }).toList(),
                         ),
-                        // for (int i = 0; i < 5; i++)
+                        // for (var user in displayedUsers.asMap().entries)
                         for (var user in userList.asMap().entries)
                           TableRow(
                             decoration: BoxDecoration(
@@ -229,22 +221,21 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                                 ),
                               ),
                               TableCell(
-                                child: Container(
-                                  padding: const EdgeInsets.all(8.0),
                                   child: Container(
-                                    color: Colors.yellow,
-                                    child: Text(
-                                      user.value.latestStatus == null
-                                          ? ""
-                                          : user.value.latestStatus!,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                      ),
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  color: Colors.yellow,
+                                  child: Text(
+                                    user.value.latestStatus == null
+                                        ? ""
+                                        : user.value.latestStatus!,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ),
-                              ),
+                              ))
                             ],
                           ),
                       ],
@@ -257,9 +248,21 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                 }
               },
             ),
+            // if (loadMoreButtonVisible && loadMore)
+            //   ElevatedButton(
+            //     onPressed: () => loadMoreEntries(),
+            //     child: const Text('Load More'),
+            //   ),
           ],
         ),
       ),
-    ));
+    );
   }
+
+  // void loadMoreEntries() {
+  //   setState(() {
+  //     limit += 10;
+  //     loadMoreButtonVisible = false;
+  //   });
+  // }
 }
