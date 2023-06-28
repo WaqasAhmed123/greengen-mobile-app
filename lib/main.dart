@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greengen/helper/theme.dart';
 import 'package:greengen/screens/login.dart';
-import 'package:greengen/screens/img_upload_scrn.dart';
-import 'package:greengen/screens/all_users_scrn.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,9 +31,9 @@ class MyApp extends StatelessWidget {
         primaryColorLight: const Color(0XFF7db841),
         primarySwatch: const MaterialColor(0XFF076D32, color),
         // scaffoldBackgroundColor: Colors.white,
-        textTheme: TextTheme(
-            titleMedium: textTheme['titleMedium'],
-            bodyMedium: textTheme['bodyMedium']),
+        // textTheme: TextTheme(
+        //     titleMedium: textTheme['titleMedium'],
+        //     bodyMedium: textTheme['bodyMedium']),
         // This is the theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see

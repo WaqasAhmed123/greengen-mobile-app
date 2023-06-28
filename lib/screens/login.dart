@@ -131,7 +131,7 @@ class _LoginState extends State<Login> {
                     TextButton(
                       onPressed: () {},
                       child: const Text(
-                        "Reset password",
+                        "Ripristina",
                         style: TextStyle(color: Colors.blue, fontSize: 12),
                       ),
                     ),

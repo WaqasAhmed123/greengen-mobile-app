@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:greengen/model/img_upload.dart';
-import 'package:greengen/model/user_model.dart';
 import 'package:greengen/screens/all_users_scrn.dart';
-import 'package:greengen/screens/login.dart';
+import 'package:greengen/widgets/appbar_show_menu.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageUploadScreen extends StatefulWidget {
@@ -27,13 +26,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   // File? imageFile;
   List<String> pickedImagesPath = [];
   List<File> images = [];
-  List<String> popUpOptionsList = [
-    UserModel.name.toString(),
-    // UserModel.email.toString()=="null"?"NA":UserModel.email.toString(),
-    UserModel.locallyStoredemail.toString(),
-    "Password Reset",
-    "Logout"
-  ];
 
   Widget _buildImageWidget(int index) {
     return GestureDetector(
@@ -144,166 +136,21 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                     // height: 32,
                   ),
                   const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      showMenu(
-                        context: context,
-                        position: const RelativeRect.fromLTRB(20, 0, 0, 0),
-                        items: <PopupMenuEntry>[
-                          PopupMenuItem(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List<Widget>.generate(
-                                popUpOptionsList.length,
-                                (index) => Align(
-                                  alignment: Alignment.topLeft,
-                                  child: TextButton(
-                                    onPressed: () async {
-                                      // Handle option based on index
-                                      if (index == 0) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const AllUsersScreen()),
-                                        );
-                                      } else if (index == 1) {
-                                        // Handle email option
-                                      } else if (index == 2) {
-                                        // Handle password reset option
-                                      } else if (index == 3) {
-                                        if (await UserModel.logout() == true) {
-                                          print(
-                                              'Logout successful. Navigating to Login screen.');
-                                          Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const Login()),
-                                            (route) => false,
-                                          );
-                                        }
-                                        // Handle logout option
-                                      }
-                                    },
-                                    child: Text(
-                                      popUpOptionsList[index],
-                                      style: TextStyle(
-                                          color: index == 2 || index == 3
-                                              ? Colors.blue
-                                              : index == 1
-                                                  ? Colors.black
-                                                      .withOpacity(0.5)
-                                                  : Colors.black),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const PopupMenuItem(
-                              child: Divider(
-                            height: 0,
-                            color: Colors.black,
-                          )),
-                          PopupMenuItem(
-                              child: TextButton(
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AllUsersScreen())),
-                                  child: const Text(
-                                    "All Users",
-                                    style: TextStyle(color: Colors.black),
-                                  ))),
-                          // PopupMenuItem(
-                          //   child: ListTile(
-                          //     title: const Text('Username'),
-                          //     onTap: () {
-                          //       // Handle username option
-                          //     },
-                          //   ),
-                          // ),
-                          // PopupMenuItem(
-                          //   child: ListTile(
-                          //     title: const Text('Email'),
-                          //     onTap: () {
-                          //       // Handle email option
-                          //     },
-                          //   ),
-                          // ),
-                          // PopupMenuItem(
-                          //   child: ListTile(
-                          //     title: const Text('Reset Password'),
-                          //     onTap: () {
-                          //       // Handle reset password option
-                          //     },
-                          //   ),
-                          // ),
-                          // PopupMenuItem(
-                          //   child: ListTile(
-                          //     title: const Text('Logout'),
-                          //     onTap: () {
-                          //       // Handle logout option
-                          //     },
-                          //   ),
-                          // ),
-                          // const PopupMenuItem(
-                          //     child: Divider(
-                          //   color: Colors.black,
-                          // )),
-                          // PopupMenuItem(
-                          //   child: ListTile(
-                          //     title: const Text('All User'),
-                          //     onTap: () {
-                          //       Navigator.push(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //               builder: (context) => AllUsersScreen()));
-
-                          //       // Handle logout option
-                          //     },
-                          //   ),
-                          // ),
-                        ],
-                      );
-                    },
-                    child: const Text(
-                      'PASQUALE',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Navigator.push(
+                  showPopUp(
+                      context: context,
+                      scrName: "All Users",
+                      navFunc: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AllUsersScreen()));
+                      })
+                  // personButton(navigationFunc: () {
+                  //   Navigator.push(
                   //       context,
                   //       MaterialPageRoute(
-                  //           builder: (context) => const AllUsersScreen()),
-                  //     );
-                  //   },
-                  //   child: const Text(
-                  //     'PASQUALE',
-                  //     style: TextStyle(
-                  //         fontSize: 15,
-                  //         color: Colors.white,
-                  //         fontWeight: FontWeight.bold),
-                  //   ),
-                  // ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8.0),
-                    child: Icon(
-                      Icons.person,
-                      size: 14,
-                      color: Colors.white,
-                    ),
-                  ),
+                  //           builder: (context) => const AllUsersScreen()));
+                  // })
                 ],
               ),
             ),
@@ -314,63 +161,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             padding: const EdgeInsets.all(16),
             child: Container(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
-                    children: [
-                      Text(
-                        "Immagini Anti Opera",
-                        style: TextStyle(
-                          fontSize: 15.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                  const Row(
-                    children: [
-                      Text(
-                        "Premi sui tre puniti (1) per scaricare o eliminare un'immagnini",
-                        style: TextStyle(
-                          fontSize: 11.0,
-                          color: Colors.black,
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          _showUploadOptions();
-                          // _getFromGallery();
-                        },
-                        child: Container(
-                          height: 20,
-                          width: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).primaryColorLight)),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "CARRICA IMMAGINE",
-                              style: TextStyle(
-                                  fontSize: 7,
-                                  color: Theme.of(context).primaryColorDark),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
                   SizedBox(
                     height: 30,
                     child: TextField(
@@ -392,6 +184,64 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                         contentPadding: EdgeInsets.all(8.0),
                       ),
                     ),
+                  ),
+                   const SizedBox(
+                    height: 5,
+                  ),
+                  const Row(
+                    children: [
+                      Text(
+                        // "Immagini Anti Opera",
+                        "Immagini Post Opera",
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Premi sui tre puntini (I) per scaricare o eliminare un'immagnini",
+                        style: TextStyle(
+                          fontSize: 11.0,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 7,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _showUploadOptions();
+                      // _getFromGallery();
+                    },
+                    child: Container(
+                      
+                      height: 20,
+                      width: MediaQuery.of(context).size.width*1,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            
+                              color: Theme.of(context).primaryColorLight)),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "CARRICA IMMAGINE",
+                          style: TextStyle(
+                              fontSize: 7,
+                              color: Theme.of(context).primaryColorDark),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
                   ),
                   const SizedBox(
                     height: 5,

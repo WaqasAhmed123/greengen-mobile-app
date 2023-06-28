@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:greengen/screens/img_upload_scrn.dart';
+import 'package:greengen/widgets/appbar_show_menu.dart';
 
 import '../model/all_users.dart';
 
@@ -39,22 +41,31 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                 width: 100,
               ),
               const Spacer(),
-              const Text(
-                'PASQUALE',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 4.0),
-                child: Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 14.0,
-                ),
-              ),
+              showPopUp(
+                  context: context,
+                  scrName: "Home",
+                  navFunc: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ImageUploadScreen()));
+                  }),
+              // const Text(
+              //   'PASQUALE',
+              //   style: TextStyle(
+              //     fontSize: 10,
+              //     color: Colors.white,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+              // const Padding(
+              //   padding: EdgeInsets.only(left: 4.0),
+              //   child: Icon(
+              //     Icons.person,
+              //     color: Colors.white,
+              //     size: 14.0,
+              //   ),
+              // ),
             ],
           ),
         ),
