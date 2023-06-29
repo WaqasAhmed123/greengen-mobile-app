@@ -135,9 +135,6 @@ class UserModel {
         token = responseData['token'];
         // name = responseData['name'];
         // email = responseData['email'];
-        print(token);
-        print(id);
-        print(name);
 
         // print(email);
         // await removeToken();
@@ -146,8 +143,6 @@ class UserModel {
         return successful = true;
       } catch (e) {
         return successful;
-        print('Error parsing JSON response: $e');
-        throw Exception('Failed to obtain token');
       }
     }
     return successful;
@@ -158,7 +153,6 @@ class UserModel {
     // final url = 'https://example.com/logout'; // Replace with your API endpoint URL
     final token = await UserModel.getToken();
 
-    print(token);
     final Map<String, dynamic> logoutdata = {
       'token': token,
     };
@@ -188,13 +182,9 @@ class UserModel {
       if (response.statusCode == 200) {
         return successful = true;
         // Logout successful
-        print('api Response: ${response.body}');
-        print('Logout successful');
       } else {
         return successful;
         // Logout failed
-        print('Logout failed: ${response.statusCode}');
-        print('Error uploading image: ${response.headers}');
       }
     } catch (e) {
       // Error occurred during the request

@@ -20,7 +20,7 @@ class ImageUpload {
 
     final token = await UserModel.getToken();
 
-    print(token);
+    // print(token);
     bool success = false;
 
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
@@ -69,14 +69,11 @@ class ImageUpload {
     // Check the response status
     if (response.statusCode == 200 || response.statusCode == 201) {
       // Image uploaded successfully
-      print('Image uploaded');
+      // print('Image uploaded');
       success = true;
       return success;
     } else {
       return success;
-      // Error occurred during upload
-      print('Error uploading image: ${response.statusCode}');
-      print('Error uploading image: ${await response.stream.bytesToString()}');
     }
   }
 }

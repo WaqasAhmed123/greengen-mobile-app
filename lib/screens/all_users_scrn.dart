@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:greengen/screens/img_upload_scrn.dart';
 import 'package:greengen/widgets/appbar_show_menu.dart';
 
 import '../model/all_users.dart';
@@ -12,7 +13,22 @@ class AllUsersScreen extends StatefulWidget {
 }
 
 class _AllUsersScreenState extends State<AllUsersScreen> {
-  final allUsers = AllUsers();
+  StreamSubscription<List<AllUsers>>? _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = AllUsers.getUsersFromApi().listen((data) {
+      // handle stream data
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   final tableTitleArr = [
     "NOME",
     "COMUNE",
@@ -45,10 +61,12 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                   context: context,
                   scrName: "Home",
                   navFunc: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ImageUploadScreen()));
+                    // Future.delayed(Duration(seconds: 1));
+                    Navigator.pop(context);
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const ImageUploadScreen()));
                   }),
             ],
           ),

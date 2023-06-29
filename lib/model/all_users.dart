@@ -74,7 +74,7 @@ class AllUsers {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      print(jsonData);
+      // print(jsonData);
       final userList = List<AllUsers>.from(jsonData['users']
               .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
           .toList();
