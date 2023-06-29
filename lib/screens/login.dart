@@ -51,11 +51,14 @@ class _LoginState extends State<Login> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    const Text(
-                      "Portale Greengen",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0XFF076D32),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: const Text(
+                        "Portale Greengen",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Color(0XFF076D32),
+                        ),
                       ),
                     ),
                     const SizedBox(

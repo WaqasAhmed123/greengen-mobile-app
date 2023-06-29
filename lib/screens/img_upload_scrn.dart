@@ -78,31 +78,35 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         );
       },
       child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 10,
+              offset: const Offset(0, 0), // Shadow position
+            ),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 100,
+              width: double.infinity,
               height: 100,
-              // decoration: BoxDecoration(
-              //   shape: BoxShape.circle,
-              //   border: Border.all(
-              //     color: Colors.black,
-              //     width: 2,
-              //   ),
-              // ),
               child: Image.file(
                 File(pickedImagesPath[index]),
                 fit: BoxFit.cover,
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                  DateFormat('dd/MM/yy').format(DateTime.now()),
                   style: const TextStyle(color: Colors.grey, fontSize: 9),
                 ),
-                // const Spacer(),
+                const Spacer(),
                 PopupMenuButton(
                   itemBuilder: (BuildContext context) => [
                     const PopupMenuItem(
@@ -128,7 +132,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                             color: Colors.blue,
                           ),
                           SizedBox(width: 8),
-                          Text('Elimina', style: TextStyle(color: Colors.blue)),
+                          Text('Elimina',
+                              style: TextStyle(color: Colors.blue)),
                         ],
                       ),
                     ),
@@ -147,10 +152,12 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   style: const TextStyle(color: Colors.black, fontSize: 9),
                 ),
                 const Spacer(),
-                Text(DateFormat('dd/MM/yyyy').format(DateTime.now()),
-                    style: const TextStyle(color: Colors.grey, fontSize: 9)),
+                Text(
+                  DateFormat('dd/MM/yy').format(DateTime.now()),
+                  style: const TextStyle(color: Colors.grey, fontSize: 9),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
