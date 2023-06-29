@@ -50,22 +50,6 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                         MaterialPageRoute(
                             builder: (context) => const ImageUploadScreen()));
                   }),
-              // const Text(
-              //   'PASQUALE',
-              //   style: TextStyle(
-              //     fontSize: 10,
-              //     color: Colors.white,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
-              // const Padding(
-              //   padding: EdgeInsets.only(left: 4.0),
-              //   child: Icon(
-              //     Icons.person,
-              //     color: Colors.white,
-              //     size: 14.0,
-              //   ),
-              // ),
             ],
           ),
         ),

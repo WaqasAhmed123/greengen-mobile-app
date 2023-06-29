@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-inputField({String? hintText, controller, context, obscureText = false,validator}) {
-  return Container(
+inputField(
+    {String? hintText, controller, context, obscureText = false, validator}) {
+  return SizedBox(
     width: MediaQuery.of(context).size.width * 0.7,
     child: TextFormField(
       validator: validator,
@@ -11,9 +12,9 @@ inputField({String? hintText, controller, context, obscureText = false,validator
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: Theme.of(context).textTheme.titleSmall,
-        contentPadding: EdgeInsets.all(16),
+        contentPadding: const EdgeInsets.all(16),
         filled: true,
-        fillColor: Color(0xFFe8f0fd),
+        fillColor: const Color(0xFFe8f0fd),
         border: OutlineInputBorder(
           borderSide: BorderSide(color: Theme.of(context).primaryColor),
         ),

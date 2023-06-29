@@ -53,6 +53,22 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const Login(),
+      // home: FutureBuilder<dynamic>(
+      //   future: UserModel.isLogin(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       // Show a loading indicator if the future is still loading
+      //       return CircularProgressIndicator();
+      //     } else if (snapshot.hasError) {
+      //       // Handle error if the future encounters an error
+      //       return Text('Error: ${snapshot.error}');
+      //     } else {
+      //       // Render the screens based on the result of the future
+      //       final bool isLoggedIn = snapshot.data ?? false;
+      //       return isLoggedIn ? const ImageUploadScreen() : const Login();
+      //     }
+      //   },
+      // ),
     );
   }
 }

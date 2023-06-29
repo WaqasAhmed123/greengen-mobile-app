@@ -17,61 +17,75 @@ appbarMenuItem({context, scrName, navFunc}) {
     items: <PopupMenuEntry>[
       PopupMenuItem(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List<Widget>.generate(
-            popUpOptionsList.length,
-            (index) => Align(
-              alignment: Alignment.topLeft,
-              child: TextButton(
-                style: ButtonStyle(
-                    overlayColor:
-                        MaterialStateProperty.all<Color?>(Colors.transparent)),
-                onPressed: () async {
-                  // Handle option based on index
-                  if (index == 0) {
-                  } else if (index == 1) {
-                    // Handle email option
-                  } else if (index == 2) {
-                    // Handle password reset option
-                  } else if (index == 3) {
-                    if (await UserModel.logout() == true) {
-                      print('Logout successful. Navigating to Login screen.');
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Login()),
-                        (route) => false,
-                      );
+            // mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: popUpOptionsList.map((option) {
+              int index = popUpOptionsList.indexOf(option);
+              return PopupMenuItem(
+                child: GestureDetector(
+                  onTap: () async {
+                    // Handle option based on index
+                    if (index == 0) {
+                      // Handle name option
+                    } else if (index == 1) {
+                      // Handle email option
+                    } else if (index == 2) {
+                      // Handle password reset option
+                    } else if (index == 3) {
+                      if (await UserModel.logout() == true) {
+                        Navigator.pop(context);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Login()),
+                          (route) => false,
+                        );
+                      }
+                      // Handle logout option
                     }
-                    // Handle logout option
-                  }
-                },
-                child: Text(
-                  popUpOptionsList[index],
-                  style: TextStyle(
-                      color: index == 2 || index == 3
-                          ? Colors.blue
-                          : index == 1
-                              ? Colors.black.withOpacity(0.5)
-                              : Colors.black),
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: Text(
+                      option,
+                      style: TextStyle(
+                        color: index == 2 || index == 3
+                            ? Colors.blue
+                            : index == 1
+                                ? Colors.black.withOpacity(0.5)
+                                : Colors.black,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              );
+            }).toList()),
+      ),
+      PopupMenuItem(
+          child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Divider(
+          height: 0,
+          color: Colors.black.withOpacity(0.3),
+        ),
+      )),
+      PopupMenuItem(
+          child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+          navFunc();
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 1,
+            child: Text(
+              scrName,
+              style: const TextStyle(color: Colors.black),
             ),
           ),
         ),
-      ),
-      PopupMenuItem(
-          child: Divider(
-        height: 0,
-        color: Colors.black.withOpacity(0.3),
       )),
-      PopupMenuItem(
-          child: TextButton(
-              onPressed: () => navFunc(),
-              child: Text(
-                scrName,
-                style: const TextStyle(color: Colors.black),
-              ))),
     ],
   );
 }
@@ -106,5 +120,11 @@ Widget showPopUp({context, scrName, navFunc}) {
         ],
       ),
     ),
+  );
+}
+
+Widget showMenuOptions({text}) {
+  return ListTile(
+    leading: Text(text),
   );
 }

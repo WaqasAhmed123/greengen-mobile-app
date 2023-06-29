@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,6 +39,11 @@ class UserModel {
   static String? token;
 
 // handle local storage
+  // static Future isLogin() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.containsKey("token");
+  // }
+
   static Future saveToken({String? token}) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("token", token!);

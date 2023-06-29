@@ -24,6 +24,7 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -109,12 +110,11 @@ class _LoginState extends State<Login> {
                                 true) {
                               await UserModel.saveEmail(
                                   email: emailController.text);
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ImageUploadScreen(),
-                                ),
+                                    builder: (context) =>
+                                        const ImageUploadScreen()),
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(

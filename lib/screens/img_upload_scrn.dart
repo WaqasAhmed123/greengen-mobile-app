@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:greengen/model/img_upload.dart';
+import 'package:greengen/model/user_model.dart';
 import 'package:greengen/screens/all_users_scrn.dart';
 import 'package:greengen/widgets/appbar_show_menu.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class ImageUploadScreen extends StatefulWidget {
   const ImageUploadScreen({super.key});
@@ -16,6 +18,13 @@ class ImageUploadScreen extends StatefulWidget {
 
 class _ImageUploadScreenState extends State<ImageUploadScreen> {
   TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   void dispose() {
     searchController.dispose(); // Dispose the TextEditingController
@@ -23,10 +32,36 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   }
 
   String _selectedOption = '';
-  // File? imageFile;
   List<String> pickedImagesPath = [];
   List<File> images = [];
 
+  // Widget _buildImageWidget(int index) {
+  //   return GestureDetector(
+  //     onTap: () {
+  //       showDialog(
+  //         context: context,
+  //         builder: (BuildContext context) {
+  //           return Dialog(
+  //             child: Image.file(
+  //               File(pickedImagesPath[index]),
+  //               fit: BoxFit.contain,
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //     child: Container(
+  //       // decoration: BoxDecoration(
+  //       //     border: Border.all(), borderRadius: BorderRadius.circular(10)),
+  //       // width: 50,
+  //       height: 50,
+  //       child: Image.file(
+  //         File(pickedImagesPath[index]),
+  //         fit: BoxFit.cover,
+  //       ),
+  //     ),
+  //   );
+  // }
   Widget _buildImageWidget(int index) {
     return GestureDetector(
       onTap: () {
@@ -42,12 +77,81 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           },
         );
       },
-      child: SizedBox(
-        width: 50,
-        height: 50,
-        child: Image.file(
-          File(pickedImagesPath[index]),
-          fit: BoxFit.cover,
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 100,
+              height: 100,
+              // decoration: BoxDecoration(
+              //   shape: BoxShape.circle,
+              //   border: Border.all(
+              //     color: Colors.black,
+              //     width: 2,
+              //   ),
+              // ),
+              child: Image.file(
+                File(pickedImagesPath[index]),
+                fit: BoxFit.cover,
+              ),
+            ),
+            Row(
+              children: [
+                Text(
+                  DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                  style: const TextStyle(color: Colors.grey, fontSize: 9),
+                ),
+                // const Spacer(),
+                PopupMenuButton(
+                  itemBuilder: (BuildContext context) => [
+                    const PopupMenuItem(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.download,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Scarica',
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 8),
+                          Text('Elimina', style: TextStyle(color: Colors.blue)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const Text(
+              "Caricato da:",
+              style: TextStyle(color: Colors.black, fontSize: 9),
+            ),
+            Row(
+              children: [
+                Text(
+                  "${UserModel.name}",
+                  style: const TextStyle(color: Colors.black, fontSize: 9),
+                ),
+                const Spacer(),
+                Text(DateFormat('dd/MM/yyyy').format(DateTime.now()),
+                    style: const TextStyle(color: Colors.grey, fontSize: 9)),
+              ],
+            )
+          ],
         ),
       ),
     );
@@ -145,12 +249,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                             MaterialPageRoute(
                                 builder: (context) => const AllUsersScreen()));
                       })
-                  // personButton(navigationFunc: () {
-                  //   Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //           builder: (context) => const AllUsersScreen()));
-                  // })
                 ],
               ),
             ),
@@ -185,7 +283,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                       ),
                     ),
                   ),
-                   const SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   const Row(
@@ -221,13 +319,11 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                       // _getFromGallery();
                     },
                     child: Container(
-                      
                       height: 20,
-                      width: MediaQuery.of(context).size.width*1,
+                      width: MediaQuery.of(context).size.width * 1,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(4),
                           border: Border.all(
-                            
                               color: Theme.of(context).primaryColorLight)),
                       child: Align(
                         alignment: Alignment.center,
@@ -253,6 +349,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                                 mainAxisSpacing: 7,
                                 crossAxisSpacing: 7,
+                                mainAxisExtent: 200,
                                 crossAxisCount: 3),
                         itemBuilder: ((context, index) =>
                             _buildImageWidget(index)),

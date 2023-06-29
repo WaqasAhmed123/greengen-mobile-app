@@ -69,7 +69,7 @@ class AllUsers {
     );
   }
   static Stream<List<AllUsers>> getUsersFromApi() async* {
-    final url = 'https://crm-crisaloid.com/api/constructionUser';
+    const url = 'https://crm-crisaloid.com/api/constructionUser';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
