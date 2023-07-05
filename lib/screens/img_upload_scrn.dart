@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:greengen/model/img_upload.dart';
+import 'package:greengen/model/image_%20model.dart';
 import 'package:greengen/screens/all_users_scrn.dart';
 import 'package:greengen/widgets/appbar_show_menu.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +17,7 @@ class ImageUploadScreen extends StatefulWidget {
 
 class _ImageUploadScreenState extends State<ImageUploadScreen> {
   TextEditingController searchController = TextEditingController();
+  bool _uploadInProgress = false;
 
   @override
   void initState() {
@@ -34,12 +35,15 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   List<String> pickedImagesPath = [];
   List<File> images = [];
 
-
   Future<void> _getFromGallery() async {
     // List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
     List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
 
     if (pickedFiles.isNotEmpty) {
+      setState(() {
+        _uploadInProgress = true; // Set upload flag to true
+      });
+
       List<File> imageFiles = [];
 
       for (var pickedFile in pickedFiles) {
@@ -50,14 +54,10 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       }
       images.addAll(imageFiles);
 
-      setState(() {
-        // images = imageFiles;
-        // images.addAll(imageFiles);
-      });
       print(images);
       print(images.length);
 
-      if (await ImageUpload.uploadImage(
+      if (await ImageModel.uploadImage(
               // token: token,
               images: images,
               // constructionSideId: 551,
@@ -67,6 +67,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           for (var image in imageFiles) {
             pickedImagesPath.add(image.path);
           }
+          _uploadInProgress = false; // Set upload flag to false
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -75,6 +76,9 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           ),
         );
       } else {
+        setState(() {
+          _uploadInProgress = false; // Set upload flag to false
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to Upload'),
@@ -99,144 +103,162 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/pictures/logo.png',
-                  width: 100,
-                  // height: 32,
-                ),
-                const Spacer(),
-                showPopUp(
-                    context: context,
-                    scrName: "All Users",
-                    navFunc: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AllUsersScreen()));
-                    })
-              ],
-            ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        titleSpacing: 0,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Image.asset(
+                'assets/pictures/logo.png',
+                width: 100,
+                // height: 32,
+              ),
+              const Spacer(),
+              showPopUp(
+                context: context,
+                scrName: "Tutti gli utenti",
+                navFunc: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AllUsersScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 30,
-                  child: TextField(
-                    controller: searchController,
-                    // textAlignVertical: TextAlignVertical.center,
-
-                    style: const TextStyle(fontSize: 10, color: Colors.grey),
-                    decoration: const InputDecoration(
-                      hintText: 'Cerca Immagine',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      contentPadding: EdgeInsets.all(8.0),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 30,
+                child: TextField(
+                  controller: searchController,
+                  // textAlignVertical: TextAlignVertical.center,
+                  style: const TextStyle(fontSize: 10, color: Colors.grey),
+                  decoration: const InputDecoration(
+                    hintText: 'Cerca Immagine',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    contentPadding: EdgeInsets.all(8.0),
                   ),
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
-                const Row(
-                  children: [
-                    Text(
-                      // "Immagini Anti Opera",
-                      "Immagini Post Opera",
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "Premi sui tre puntini (I) per scaricare o eliminare un'immagnini",
-                      style: TextStyle(
-                        fontSize: 11.0,
-                        color: Colors.black.withOpacity(0.5),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 7,
-                ),
-                InkWell(
-                  onTap: () {
-                    _showUploadOptions();
-                    // _getFromGallery();
-                  },
-                  child: Container(
-                    height: 20,
-                    width: MediaQuery.of(context).size.width * 1,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                            color: Theme.of(context).primaryColorLight)),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "CARRICA IMMAGINE",
-                        style: TextStyle(
-                            fontSize: 7,
-                            color: Theme.of(context).primaryColorDark),
-                      ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              const Row(
+                children: [
+                  Text(
+                    // "Immagini Anti Opera",
+                    "Immagini Post Opera",
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Premi sui tre puntini (I) per scaricare o eliminare un'immagnini",
+                    style: TextStyle(
+                      fontSize: 11.0,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 7,
+              ),
+              InkWell(
+                onTap: () {
+                  _showUploadOptions();
+                  // _getFromGallery();
+                },
+                child: Container(
+                  height: 20,
+                  width: MediaQuery.of(context).size.width * 1,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColorLight,
                     ),
                   ),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: _uploadInProgress // Show indicator based on flag
+                        ? const CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ) // Circular indicator when upload is in progress
+                        : Text(
+                            "CARRICA IMMAGINE",
+                            style: TextStyle(
+                              fontSize: 7,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                          ),
+                  ),
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  child: Expanded(
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              // childAspectRatio: 1.3,
-                              mainAxisSpacing: 7,
-                              crossAxisSpacing: 7,
-                              mainAxisExtent: 200,
-                              crossAxisCount: 2),
-                      itemBuilder: ((context, index) => buildImageWidget(
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Container(
+                child: Expanded(
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      // childAspectRatio: 1.3,
+                      mainAxisSpacing: 7,
+                      crossAxisSpacing: 7,
+                      mainAxisExtent: 200,
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: ((context, index) => buildImageWidget(
                           index: index,
                           pickedImagesPath: pickedImagesPath,
-                          context: context)),
-                      // itemCount: images.length,
-                      itemCount: pickedImagesPath.length,
-                    ),
+                          // deleteImage: ImageModel.imageModels,
+                          removeImage: () {
+                            setState(() {
+                              pickedImagesPath.removeAt(index);
+                            });
+                          },
+                          context: context,
+                        )),
+                    // itemCount: images.length,
+                    itemCount: pickedImagesPath.length,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   void _showUploadOptions() {

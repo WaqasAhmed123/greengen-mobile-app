@@ -1,16 +1,64 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:greengen/model/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-class ImageUpload {
+class ImageModel {
+  final int id;
+  // final String folderByRespnse;
+  // final String constructionSiteId;
+  // final String uploadedBy;
+  // final String name;
+  // final String path;
+  // final String updatedAt;
+  // final String createdAt;
+
+  ImageModel({
+    required this.id,
+    // required this.folderByRespnse,
+    // required this.constructionSiteId,
+    // required this.uploadedBy,
+    // required this.name,
+    // required this.path,
+    // required this.updatedAt,
+    // required this.createdAt,
+  });
+
+  static Future<void> deleteImage(int id) async {
+    const apiUrl =
+        'https://www.crm-crisaloid.com/api/images'; // Replace with your API endpoint
+
+    try {
+      final token = await UserModel.getToken();
+      final headers = {'Authorization': 'Bearer $token'};
+
+      final response =
+          await http.delete(Uri.parse('$apiUrl/$id'), headers: headers);
+
+      if (response.statusCode == 200) {
+        print('Image deleted successfully');
+        // Remove the image from the list or update the state
+        // setState(() {
+        //   images.removeWhere((image) => image.id == id);
+        // });
+      } else {
+        print('Failed to delete image. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error deleting image: $e');
+    }
+  }
+
   // assignTokenValue()async {
   //   UserModel.
 
   // }
   // List<File> images = [];
   // static int? constructionSideId = UserModel.id;
-  String? folder;
+  // String? folder;
+  static List<ImageModel> imageModels = [];
 
   static Future<bool> uploadImage({List<File>? images, String? folder}) async {
     // String? token=await
@@ -68,8 +116,30 @@ class ImageUpload {
 
     // Check the response status
     if (response.statusCode == 200 || response.statusCode == 201) {
+      print(response.statusCode);
+      var responseData = await response.stream.transform(utf8.decoder).join();
+
+      print('Response: $responseData');
+      var jsonResponse = json.decode(responseData);
+
+      // Create an ImageModel object using the response data
+      var imageModel = ImageModel(
+        id: jsonResponse['id'],
+        // folderByRespnse: jsonResponse['folder'],
+        // constructionSiteId: jsonResponse['construction_site_id'],
+        // uploadedBy: jsonResponse['uploaded_by'],
+        // name: jsonResponse['name'],
+        // path: jsonResponse['path'],
+        // updatedAt: jsonResponse['updated_at'],
+        // createdAt: jsonResponse['created_at'],
+      );
+
+      // Append the ImageModel object to the list
+      imageModels.add(imageModel);
+      // print(respons.e)
       // Image uploaded successfully
       // print('Image uploaded');
+      print(imageModel);
       success = true;
       return success;
     } else {

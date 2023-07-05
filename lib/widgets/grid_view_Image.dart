@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 
 import '../model/user_model.dart';
 
-Widget buildImageWidget({int? index, pickedImagesPath, context}) {
+Widget buildImageWidget({int? index, pickedImagesPath, context, removeImage}) {
   return GestureDetector(
     onTap: () {
       showDialog(
@@ -34,27 +35,9 @@ Widget buildImageWidget({int? index, pickedImagesPath, context}) {
           ),
         ],
       ),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.black.withOpacity(0.4),
-      //       blurRadius: 10,
-      //       offset: const Offset(0, 0), // Shadow position
-      //     ),
-      //   ],
-      // ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // SizedBox(
-          //   width: double.infinity,
-          //   height: 100,
-          //   child: Image.file(
-          //     File(pickedImagesPath[index]),
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
           Expanded(
             child: SizedBox(
               width: double.infinity,
@@ -83,32 +66,53 @@ Widget buildImageWidget({int? index, pickedImagesPath, context}) {
                     alignment: Alignment.topRight,
                     child: PopupMenuButton(
                       itemBuilder: (BuildContext context) => [
-                        const PopupMenuItem(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.download,
-                                color: Colors.blue,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Scarica',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            ],
+                        PopupMenuItem(
+                          child: InkWell(
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              _downloadImage(pickedImagesPath[index], context);
+                              Navigator.of(context).pop();
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.download,
+                                  color: Colors.blue,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Scarica',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        const PopupMenuItem(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.delete,
-                                color: Colors.blue,
-                              ),
-                              SizedBox(width: 8),
-                              Text('Elimina',
-                                  style: TextStyle(color: Colors.blue)),
-                            ],
+                        PopupMenuItem(
+                          child: InkWell(
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              removeImage();
+                              Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Image deleted'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              // print("deleted");
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.delete,
+                                  color: Colors.blue,
+                                ),
+                                SizedBox(width: 8),
+                                Text('Elimina',
+                                    style: TextStyle(color: Colors.blue)),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -145,4 +149,33 @@ Widget buildImageWidget({int? index, pickedImagesPath, context}) {
       ),
     ),
   );
+}
+
+Future<void> _downloadImage(String imagePath, context) async {
+  try {
+    final result = await ImageGallerySaver.saveFile(imagePath);
+
+    if (result['isSuccess']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Image downloaded and saved to gallery'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to download image'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error: $e'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 }

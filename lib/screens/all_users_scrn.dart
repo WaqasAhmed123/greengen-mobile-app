@@ -59,7 +59,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
               const Spacer(),
               showPopUp(
                   context: context,
-                  scrName: "Home",
+                  scrName: "Casa",
                   navFunc: () {
                     // Future.delayed(Duration(seconds: 1));
                     Navigator.pop(context);
@@ -82,7 +82,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
               width: MediaQuery.of(context).size.width * 1.0,
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: const Text(
-                "Users List",
+                "Elenco utenti",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 32,
