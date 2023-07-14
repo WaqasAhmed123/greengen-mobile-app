@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greengen/apis/api_services.dart';
 
 import '../model/user_model.dart';
 import '../screens/login.dart';
@@ -32,7 +33,7 @@ appbarMenuItem({context, scrName, navFunc}) {
                     } else if (index == 2) {
                       // Handle password reset option
                     } else if (index == 3) {
-                      if (await UserModel.logout() == true) {
+                      if (await ApiServices.logout() == true) {
                         Navigator.pop(context);
                         Navigator.pushAndRemoveUntil(
                           context,

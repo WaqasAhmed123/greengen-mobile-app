@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:greengen/apis/api_services.dart';
 import 'package:greengen/widgets/appbar_show_menu.dart';
 
 import '../model/all_users.dart';
+import '../widgets/folder_options.dart';
 
 class AllUsersScreen extends StatefulWidget {
   const AllUsersScreen({Key? key}) : super(key: key);
@@ -13,12 +15,15 @@ class AllUsersScreen extends StatefulWidget {
 }
 
 class _AllUsersScreenState extends State<AllUsersScreen> {
+  final String _selectedOption = '';
+  String? constructionSiteId;
+
   StreamSubscription<List<AllUsers>>? _subscription;
 
   @override
   void initState() {
     super.initState();
-    _subscription = AllUsers.getUsersFromApi().listen((data) {
+    _subscription = ApiServices.getUsersFromApi().listen((data) {
       // handle stream data
     });
   }
@@ -91,7 +96,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
               ),
             ),
             StreamBuilder<List<AllUsers>>(
-              stream: AllUsers.getUsersFromApi(),
+              stream: ApiServices.getUsersFromApi(),
               builder: (BuildContext context,
                   AsyncSnapshot<List<AllUsers>> snapshot) {
                 if (snapshot.hasData) {
@@ -150,17 +155,28 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                             children: [
                               TableCell(
                                 child: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    (user.value.name == null
-                                            ? ""
-                                            : user.value.name!) +
-                                        (user.value.surename == null
-                                            ? ""
-                                            : user.value.surename!),
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.blue,
+                                  // width: (user.value.surename?.length ?? 0) * 50.0, // Adjust the multiplication factor to your desired width per character
+                                  child: InkWell(
+                                    onTap: () {
+                                      showUploadOptions(
+                                        constructionSiteId:constructionSiteId,
+                                        context: context,
+                                        selectedOption: _selectedOption,
+                                      );
+                                      constructionSiteId =
+                                          user.value.id!.toString();
+                                      print(constructionSiteId);
+                                      
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "${user.value.surename == null ? "" : user.value.surename!} ${user.value.name == null ? "" : user.value.name!}",
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blue,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -186,7 +202,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                                   child: Text(
                                     user.value.residenceStreet == null
                                         ? ""
-                                        : user.value.residenceStreet!,
+                                        : "${user.value.residenceStreet!} ${user.value.residenceHouseNumber == null ? "" : user.value.residenceHouseNumber!} ${user.value.residencePostalCode == null ? "" : user.value.residencePostalCode!}",
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.black,

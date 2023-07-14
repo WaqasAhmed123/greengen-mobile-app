@@ -1,15 +1,25 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:greengen/model/image_%20model.dart';
-import 'package:greengen/screens/all_users_scrn.dart';
-import 'package:greengen/widgets/appbar_show_menu.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../apis/api_services.dart';
+import '../model/fetched_image_model.dart';
 import '../widgets/grid_view_Image.dart';
 
 class ImageUploadScreen extends StatefulWidget {
-  const ImageUploadScreen({super.key});
+  String imageFolder;
+  String? constructionSiteId;
+
+  final _imagesStreamController =
+      StreamController<List<FetchedImagesModel>>.broadcast();
+
+  Stream<List<FetchedImagesModel>> get _imagesStream =>
+      _imagesStreamController.stream;
+
+  ImageUploadScreen(this.imageFolder, {super.key, this.constructionSiteId});
 
   @override
   _ImageUploadScreenState createState() => _ImageUploadScreenState();
@@ -22,6 +32,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    // ApiServices.getImages(id: "1184", folderName: "post");
     super.initState();
   }
 
@@ -31,8 +42,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     super.dispose();
   }
 
-  String _selectedOption = '';
-  List<String> pickedImagesPath = [];
+  // List<String> pickedImagesPath = [];
   List<File> images = [];
 
   Future<void> _getFromGallery() async {
@@ -60,13 +70,14 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       if (await ImageModel.uploadImage(
               // token: token,
               images: images,
-              // constructionSideId: 551,
-              folder: _selectedOption) ==
+              constructionSiteId: widget.constructionSiteId,
+              folder: widget.imageFolder) ==
           true) {
+        print(widget.imageFolder);
         setState(() {
-          for (var image in imageFiles) {
-            pickedImagesPath.add(image.path);
-          }
+          // for (var image in imageFiles) {
+          //   pickedImagesPath.add(image.path);
+          // }
           _uploadInProgress = false; // Set upload flag to false
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -116,18 +127,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 // height: 32,
               ),
               const Spacer(),
-              showPopUp(
-                context: context,
-                scrName: "Tutti gli utenti",
-                navFunc: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AllUsersScreen(),
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         ),
@@ -144,7 +143,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 height: 30,
                 child: TextField(
                   controller: searchController,
-                  // textAlignVertical: TextAlignVertical.center,
                   style: const TextStyle(fontSize: 10, color: Colors.grey),
                   decoration: const InputDecoration(
                     hintText: 'Cerca Immagine',
@@ -167,7 +165,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               const Row(
                 children: [
                   Text(
-                    // "Immagini Anti Opera",
                     "Immagini Post Opera",
                     style: TextStyle(
                       fontSize: 15.0,
@@ -193,8 +190,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               ),
               InkWell(
                 onTap: () {
-                  _showUploadOptions();
-                  // _getFromGallery();
+                  _getFromGallery();
                 },
                 child: Container(
                   height: 20,
@@ -229,28 +225,45 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               ),
               Container(
                 child: Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      // childAspectRatio: 1.3,
-                      mainAxisSpacing: 7,
-                      crossAxisSpacing: 7,
-                      mainAxisExtent: 200,
-                      crossAxisCount: 2,
+                  child: StreamBuilder<List<FetchedImagesModel>>(
+                    stream: ApiServices.getImages(
+                      id: widget.constructionSiteId,
+                      folderName: widget.imageFolder,
                     ),
-                    itemBuilder: ((context, index) => buildImageWidget(
-                          index: index,
-                          pickedImagesPath: pickedImagesPath,
-                          // deleteImage: ImageModel.imageModels,
-                          removeImage: () {
-                            setState(() {
-                              pickedImagesPath.removeAt(index);
-                            });
-                          },
-                          context: context,
-                        )),
-                    // itemCount: images.length,
-                    itemCount: pickedImagesPath.length,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasData) {
+                        final images = snapshot.data!;
+                        if (images.isEmpty) {
+                          return const Text('No Pictures');
+                        }
+                        return GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisSpacing: 7,
+                            crossAxisSpacing: 7,
+                            mainAxisExtent: 200,
+                            crossAxisCount: 2,
+                          ),
+                          itemBuilder: (context, index) => buildImageWidget(
+                            constructionSiteId: widget.constructionSiteId,
+                            index: index,
+                            images: images,
+                            context: context,
+                          ),
+                          itemCount: images.length,
+                        );
+                      } else {
+                        if (!snapshot.hasData) {
+                          return const Center(child: Text('No Images'));
+                        } else {
+                          return const Text('Failed To Load Images');
+                        }
+                      }
+                    },
                   ),
                 ),
               ),
@@ -258,86 +271,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  void _showUploadOptions() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Upload Options'),
-          content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RadioListTile<String>(
-                    title: const Text('ante'),
-                    value: 'ante',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('cantiere'),
-                    value: 'cantiere',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('post'),
-                    value: 'post',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                    },
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('durante'),
-                    value: 'durante',
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value!;
-                      });
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
-          actions: [
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Close'),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    _getFromGallery();
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Upload'),
-                ),
-              ],
-            )
-          ],
-        );
-      },
     );
   }
 }

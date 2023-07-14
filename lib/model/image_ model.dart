@@ -26,7 +26,7 @@ class ImageModel {
     // required this.createdAt,
   });
 
-  static Future<void> deleteImage(int id) async {
+  static Future<void> deleteImage({int? imageId}) async {
     const apiUrl =
         'https://www.crm-crisaloid.com/api/images'; // Replace with your API endpoint
 
@@ -35,14 +35,11 @@ class ImageModel {
       final headers = {'Authorization': 'Bearer $token'};
 
       final response =
-          await http.delete(Uri.parse('$apiUrl/$id'), headers: headers);
+          await http.delete(Uri.parse('$apiUrl/$imageId'), headers: headers);
 
       if (response.statusCode == 200) {
+        print(response);
         print('Image deleted successfully');
-        // Remove the image from the list or update the state
-        // setState(() {
-        //   images.removeWhere((image) => image.id == id);
-        // });
       } else {
         print('Failed to delete image. Status code: ${response.statusCode}');
       }
@@ -51,16 +48,10 @@ class ImageModel {
     }
   }
 
-  // assignTokenValue()async {
-  //   UserModel.
-
-  // }
-  // List<File> images = [];
-  // static int? constructionSideId = UserModel.id;
-  // String? folder;
   static List<ImageModel> imageModels = [];
 
-  static Future<bool> uploadImage({List<File>? images, String? folder}) async {
+  static Future<bool> uploadImage(
+      {List<File>? images, String? folder, constructionSiteId}) async {
     // String? token=await
     // Create the multipart request
     String apiUrl = 'https://www.crm-crisaloid.com/api/construction/images';
@@ -89,29 +80,10 @@ class ImageModel {
       request.files
           .add(await http.MultipartFile.fromPath('images[]', image.path));
     }
-    // var stream=new http.ByteStream(images.ope)
-    // Add the image files to the request
-    // for (var image in images!) {
-    //   var stream = http.ByteStream(image.openRead());
-    //   stream.cast();
-    //   var length = await image.length();
 
-    //   var multipartFile = http.MultipartFile(
-    //     'images[]', stream, length,
-    //     // filename: basename(image.path), contentType: ()
-    //     // filename: path.basename(image.path),
-    //     // contentType: MediaType('image', 'jpeg'), // Adjust the content type as needed
-    //   );
-
-    //   // request.files.add(multipartFile);
-    // }
-
-    // Add the other parameters
-    // request.fields['construction_site_id'] = constructionSideId.toString();
-    request.fields['construction_site_id'] = "1184";
+    request.fields['construction_site_id'] = constructionSiteId.toString();
     request.fields['folder'] = folder!;
 
-    // Send the request and get the response
     var response = await request.send();
 
     // Check the response status

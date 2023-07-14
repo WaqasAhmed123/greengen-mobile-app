@@ -1,21 +1,29 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 
+import '../model/fetched_image_model.dart';
+import '../model/image_ model.dart';
 import '../model/user_model.dart';
+// Import the API service
 
-Widget buildImageWidget({int? index, pickedImagesPath, context, removeImage}) {
+Widget buildImageWidget({
+  int? index,
+  required List<FetchedImagesModel> images,
+  context,
+  constructionSiteId,
+}) {
+  String apiUrl = 'https://crm-crisaloid.com';
+  final image = images[index!];
   return GestureDetector(
     onTap: () {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return Dialog(
-            child: Image.file(
-              File(pickedImagesPath[index]),
-              fit: BoxFit.contain,
+            child: Image.network(
+              "$apiUrl/construction-assets/$constructionSiteId/${image.path}",
+              fit: BoxFit.cover,
             ),
           );
         },
@@ -43,8 +51,8 @@ Widget buildImageWidget({int? index, pickedImagesPath, context, removeImage}) {
               width: double.infinity,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.file(
-                  File(pickedImagesPath[index]),
+                child: Image.network(
+                  "$apiUrl/construction-assets/$constructionSiteId/${image.path}",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -57,7 +65,8 @@ Widget buildImageWidget({int? index, pickedImagesPath, context, removeImage}) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  DateFormat('dd/MM/yy').format(DateTime.now()),
+                  DateFormat('dd/MM/yy').format(
+                      image.createdAt), // Use the image's createdAt property
                   style: const TextStyle(color: Colors.grey, fontSize: 9),
                 ),
                 const Spacer(),
@@ -70,7 +79,8 @@ Widget buildImageWidget({int? index, pickedImagesPath, context, removeImage}) {
                           child: InkWell(
                             splashColor: Colors.transparent,
                             onTap: () {
-                              _downloadImage(pickedImagesPath[index], context);
+                              _downloadImage(
+                                  image.path, context); // Use the image's path
                               Navigator.of(context).pop();
                             },
                             child: const Row(
@@ -91,8 +101,9 @@ Widget buildImageWidget({int? index, pickedImagesPath, context, removeImage}) {
                         PopupMenuItem(
                           child: InkWell(
                             splashColor: Colors.transparent,
-                            onTap: () {
-                              removeImage();
+                            onTap: () async {
+                              // removeImage();
+                              await ImageModel.deleteImage(imageId: image.id);
                               Navigator.of(context).pop();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -100,6 +111,7 @@ Widget buildImageWidget({int? index, pickedImagesPath, context, removeImage}) {
                                   duration: Duration(seconds: 2),
                                 ),
                               );
+
                               // print("deleted");
                             },
                             child: const Row(

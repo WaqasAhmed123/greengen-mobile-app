@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:greengen/apis/api_services.dart';
 import 'package:greengen/screens/img_upload_scrn.dart';
 import 'package:greengen/widgets/container_button.dart';
 import 'package:greengen/widgets/input_field.dart';
 
 import '../model/user_model.dart';
+import 'all_users_scrn.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -106,18 +108,19 @@ class _LoginState extends State<Login> {
                         text: "Accedi",
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            if (await UserModel.login(
+                            if (await ApiServices.login(
                                   email: emailController.text,
                                   password: passwordController.text,
                                 ) ==
                                 true) {
                               await UserModel.saveEmail(
                                   email: emailController.text);
+
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const ImageUploadScreen()),
+                                        const AllUsersScreen()),
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(

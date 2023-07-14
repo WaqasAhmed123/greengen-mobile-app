@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'user_model.dart';
+
 class AllUsers {
   int? id;
   String? oldId;
@@ -68,19 +70,26 @@ class AllUsers {
       updatedAt: json['updated_at'],
     );
   }
-  static Stream<List<AllUsers>> getUsersFromApi() async* {
-    const url = 'https://crm-crisaloid.com/api/constructionUser';
-    final response = await http.get(Uri.parse(url));
+  // static Stream<List<AllUsers>> getUsersFromApi() async* {
+  //   const url = 'https://crm-crisaloid.com/api/constructionUser';
+  //   print(await UserModel.getToken());
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      // print(jsonData);
-      final userList = List<AllUsers>.from(jsonData['users']
-              .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
-          .toList();
-      yield userList;
-    } else {
-      throw Exception('Failed to load users from API');
-    }
-  }
+  //   final response = await http.get(
+  //     Uri.parse(url),
+  //     headers: {
+  //       'Authorization': 'Bearer ${await UserModel.getToken()}',
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     final jsonData = json.decode(response.body);
+  //     // print(jsonData);
+  //     final userList = List<AllUsers>.from(jsonData['users']
+  //             .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
+  //         .toList();
+  //     yield userList;
+  //   } else {
+  //     throw Exception('Failed to load users from API');
+  //   }
+  // }
 }
