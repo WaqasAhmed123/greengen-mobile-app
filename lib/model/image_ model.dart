@@ -88,10 +88,11 @@ class ImageModel {
 
     // Check the response status
     if (response.statusCode == 200 || response.statusCode == 201) {
-      print(response.statusCode);
+      print('status code of image upload api${response.statusCode}');
+      // print(await response.stream);
       var responseData = await response.stream.transform(utf8.decoder).join();
 
-      print('Response: $responseData');
+      print('Response of image upload api: $responseData');
       var jsonResponse = json.decode(responseData);
 
       // Create an ImageModel object using the response data

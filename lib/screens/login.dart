@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:greengen/apis/api_services.dart';
-import 'package:greengen/screens/img_upload_scrn.dart';
 import 'package:greengen/widgets/container_button.dart';
 import 'package:greengen/widgets/input_field.dart';
 

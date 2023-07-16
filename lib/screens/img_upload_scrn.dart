@@ -13,12 +13,6 @@ class ImageUploadScreen extends StatefulWidget {
   String imageFolder;
   String? constructionSiteId;
 
-  final _imagesStreamController =
-      StreamController<List<FetchedImagesModel>>.broadcast();
-
-  Stream<List<FetchedImagesModel>> get _imagesStream =>
-      _imagesStreamController.stream;
-
   ImageUploadScreen(this.imageFolder, {super.key, this.constructionSiteId});
 
   @override
@@ -29,6 +23,13 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
   TextEditingController searchController = TextEditingController();
   bool _uploadInProgress = false;
 
+  Future<List<FetchedImagesModel>> _fetchImages() async {
+    return await ApiServices.getImages(
+      id: widget.constructionSiteId,
+      folderName: widget.imageFolder,
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -38,7 +39,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
 
   @override
   void dispose() {
-    searchController.dispose(); // Dispose the TextEditingController
     super.dispose();
   }
 
@@ -80,6 +80,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           // }
           _uploadInProgress = false; // Set upload flag to false
         });
+        images.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Image(s) Uploaded'),
@@ -225,11 +226,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               ),
               Container(
                 child: Expanded(
-                  child: StreamBuilder<List<FetchedImagesModel>>(
-                    stream: ApiServices.getImages(
-                      id: widget.constructionSiteId,
-                      folderName: widget.imageFolder,
-                    ),
+                  child: FutureBuilder<List<FetchedImagesModel>>(
+                    future: _fetchImages(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
@@ -249,11 +247,11 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                             crossAxisCount: 2,
                           ),
                           itemBuilder: (context, index) => buildImageWidget(
-                            constructionSiteId: widget.constructionSiteId,
-                            index: index,
-                            images: images,
-                            context: context,
-                          ),
+                              constructionSiteId: widget.constructionSiteId!,
+                              index: index,
+                              images: images,
+                              context: context,
+                              onDelete: onDelete),
                           itemCount: images.length,
                         );
                       } else {
@@ -272,5 +270,9 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         ),
       ),
     );
+  }
+
+  void onDelete() {
+    setState(() {});
   }
 }

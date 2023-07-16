@@ -137,28 +137,56 @@ class ApiServices {
 
   //____________________________________ get images
 
-  static Stream<List<FetchedImagesModel>> getImages({id, folderName}) async* {
-    final response = await http
-        .post(Uri.parse("$apiUrl/api/construction-site/images/$id"), headers: {
-      'Authorization': 'Bearer ${await UserModel.getToken()}',
-      // ...tokenHeader
-    }, body: {
-      'folderName': '$folderName'
-    });
+  // static Stream<List<FetchedImagesModel>> getImages({id, folderName}) async* {
+  //   final response = await http
+  //       .post(Uri.parse("$apiUrl/api/construction-site/images/$id"), headers: {
+  //     'Authorization': 'Bearer ${await UserModel.getToken()}',
+  //     // ...tokenHeader
+  //   }, body: {
+  //     'folderName': '$folderName'
+  //   });
+
+  //   if (response.statusCode == 200) {
+  //     // print(response.statusCode);
+  //     final jsonData = json.decode(response.body);
+  //     // print(jsonData);
+  //     final List<FetchedImagesModel> imagesList =
+  //         (jsonData['imageFolder'] as Map<String, dynamic>)
+  //             .values
+  //             .map((json) => FetchedImagesModel.fromJson(json))
+  //             .toList();
+  //     yield imagesList;
+  //   } else {
+  //     throw Exception('Failed to load images from API');
+  //   }
+  // }
+  static Future<List<FetchedImagesModel>> getImages({id, folderName}) async {
+    final response = await http.post(
+      Uri.parse("$apiUrl/api/construction-site/images/$id"),
+      headers: {
+        'Authorization': 'Bearer ${await UserModel.getToken()}',
+        // ...tokenHeader
+      },
+      body: {
+        'folderName': '$folderName',
+      },
+    );
 
     if (response.statusCode == 200) {
-      print(response.statusCode);
       final jsonData = json.decode(response.body);
-      print(jsonData);
       final List<FetchedImagesModel> imagesList =
           (jsonData['imageFolder'] as Map<String, dynamic>)
               .values
               .map((json) => FetchedImagesModel.fromJson(json))
               .toList();
-      yield imagesList;
+      print("status code of fetched images api${response.statusCode}");
+      print('Data of fetched images api $jsonData');
+      print(imagesList);
+      return imagesList;
     } else {
+      print(response.statusCode);
+
       throw Exception('Failed to load images from API');
     }
   }
-  
 }

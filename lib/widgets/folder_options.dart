@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../screens/img_upload_scrn.dart';
 
-void showUploadOptions({context, selectedOption, constructionSiteId}) {
+void showUploadOptions({
+  required BuildContext context,
+  String? selectedOption,
+   String? constructionSiteId,
+}) {
+  bool optionSelected = false; // Flag to check if an option is selected
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -20,6 +26,7 @@ void showUploadOptions({context, selectedOption, constructionSiteId}) {
                   onChanged: (value) {
                     setState(() {
                       selectedOption = value!;
+                      optionSelected = true;
                     });
                   },
                 ),
@@ -30,6 +37,7 @@ void showUploadOptions({context, selectedOption, constructionSiteId}) {
                   onChanged: (value) {
                     setState(() {
                       selectedOption = value!;
+                      optionSelected = true;
                     });
                   },
                 ),
@@ -40,6 +48,7 @@ void showUploadOptions({context, selectedOption, constructionSiteId}) {
                   onChanged: (value) {
                     setState(() {
                       selectedOption = value!;
+                      optionSelected = true;
                     });
                   },
                 ),
@@ -50,6 +59,7 @@ void showUploadOptions({context, selectedOption, constructionSiteId}) {
                   onChanged: (value) {
                     setState(() {
                       selectedOption = value!;
+                      optionSelected = true;
                     });
                   },
                 ),
@@ -69,15 +79,26 @@ void showUploadOptions({context, selectedOption, constructionSiteId}) {
               const Spacer(),
               ElevatedButton(
                 onPressed: () {
-                  // print(constructionSiteId);
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ImageUploadScreen(selectedOption,
-                          constructionSiteId: constructionSiteId),
-                    ),
-                  );
+                  if (optionSelected) {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ImageUploadScreen(
+                          selectedOption!,
+                          constructionSiteId: constructionSiteId,
+                        ),
+                      ),
+                    );
+                  } else {
+                    // No option is selected, show an error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select an option'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 },
                 child: const Text('Upload'),
               ),

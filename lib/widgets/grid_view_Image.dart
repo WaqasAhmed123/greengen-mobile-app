@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 import '../model/fetched_image_model.dart';
 import '../model/image_ model.dart';
 import '../model/user_model.dart';
 // Import the API service
 
-Widget buildImageWidget({
-  int? index,
-  required List<FetchedImagesModel> images,
-  context,
-  constructionSiteId,
-}) {
+Widget buildImageWidget(
+    {int? index,
+    required List<FetchedImagesModel> images,
+    context,
+    constructionSiteId,
+    required Function() onDelete}) {
   String apiUrl = 'https://crm-crisaloid.com';
   final image = images[index!];
   return GestureDetector(
@@ -50,7 +51,10 @@ Widget buildImageWidget({
             child: SizedBox(
               width: double.infinity,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
                 child: Image.network(
                   "$apiUrl/construction-assets/$constructionSiteId/${image.path}",
                   fit: BoxFit.cover,
@@ -80,7 +84,8 @@ Widget buildImageWidget({
                             splashColor: Colors.transparent,
                             onTap: () {
                               _downloadImage(
-                                  image.path, context); // Use the image's path
+                                  '$apiUrl/construction-assets/$constructionSiteId/${image.path}',
+                                  context); // Use the image's path
                               Navigator.of(context).pop();
                             },
                             child: const Row(
@@ -103,7 +108,10 @@ Widget buildImageWidget({
                             splashColor: Colors.transparent,
                             onTap: () async {
                               // removeImage();
+
                               await ImageModel.deleteImage(imageId: image.id);
+                              onDelete();
+
                               Navigator.of(context).pop();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -165,22 +173,25 @@ Widget buildImageWidget({
 
 Future<void> _downloadImage(String imagePath, context) async {
   try {
-    final result = await ImageGallerySaver.saveFile(imagePath);
+    final response = await http.get(Uri.parse(imagePath));
+    if (response.statusCode == 200) {
+      final result = await ImageGallerySaver.saveImage(response.bodyBytes);
 
-    if (result['isSuccess']) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Image downloaded and saved to gallery'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to download image'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      if (result['isSuccess']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Image downloaded and saved to gallery'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to download image'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(

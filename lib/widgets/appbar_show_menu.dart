@@ -11,7 +11,10 @@ List<String> popUpOptionsList = [
   "Ripristina",
   "Disconnettersi"
 ];
-appbarMenuItem({context, scrName, navFunc}) {
+appbarMenuItem({
+  context,
+//  scrName, navFunc
+}) {
   return showMenu(
     context: context,
     position: const RelativeRect.fromLTRB(20, 0, 0, 0),
@@ -62,39 +65,41 @@ appbarMenuItem({context, scrName, navFunc}) {
               );
             }).toList()),
       ),
-      PopupMenuItem(
-          child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Divider(
-          height: 0,
-          color: Colors.black.withOpacity(0.3),
-        ),
-      )),
-      PopupMenuItem(
-          child: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-          navFunc();
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 1,
-            child: Text(
-              scrName,
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-        ),
-      )),
+      // PopupMenuItem(
+      //     child: Padding(
+      //   padding: const EdgeInsets.all(16),
+      //   child: Divider(
+      //     height: 0,
+      //     color: Colors.black.withOpacity(0.3),
+      //   ),
+      // )),
+      // PopupMenuItem(
+      //     child: GestureDetector(
+      //   onTap: () {
+      //     Navigator.pop(context);
+      //     navFunc();
+      //   },
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(16.0),
+      //     child: SizedBox(
+      //       width: MediaQuery.of(context).size.width * 1,
+      //       child: Text(
+      //         scrName,
+      //         style: const TextStyle(color: Colors.black),
+      //       ),
+      //     ),
+      //   ),
+      // )),
     ],
   );
 }
 
 Widget showPopUp({context, scrName, navFunc}) {
   return GestureDetector(
-    onTap: () =>
-        appbarMenuItem(context: context, scrName: scrName, navFunc: navFunc),
+    onTap: () => appbarMenuItem(
+      context: context,
+      //  scrName: scrName, navFunc: navFunc
+    ),
     child: Container(
       child: Row(
         children: [

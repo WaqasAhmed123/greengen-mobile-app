@@ -63,16 +63,17 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
               ),
               const Spacer(),
               showPopUp(
-                  context: context,
-                  scrName: "Casa",
-                  navFunc: () {
-                    // Future.delayed(Duration(seconds: 1));
-                    Navigator.pop(context);
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const ImageUploadScreen()));
-                  }),
+                context: context,
+                // scrName: "Casa",
+                // navFunc: () {
+                //   // Future.delayed(Duration(seconds: 1));
+                //   Navigator.pop(context);
+                //   // Navigator.push(
+                //   //     context,
+                //   //     MaterialPageRoute(
+                //   //         builder: (context) => const ImageUploadScreen()));
+                // }
+              ),
             ],
           ),
         ),
@@ -158,15 +159,15 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                                   // width: (user.value.surename?.length ?? 0) * 50.0, // Adjust the multiplication factor to your desired width per character
                                   child: InkWell(
                                     onTap: () {
+                                      constructionSiteId =
+                                          user.value.id.toString();
+                                      print(constructionSiteId);
+                                      print(_selectedOption);
                                       showUploadOptions(
-                                        constructionSiteId:constructionSiteId,
+                                        constructionSiteId: constructionSiteId,
                                         context: context,
                                         selectedOption: _selectedOption,
                                       );
-                                      constructionSiteId =
-                                          user.value.id!.toString();
-                                      print(constructionSiteId);
-                                      
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(8.0),
