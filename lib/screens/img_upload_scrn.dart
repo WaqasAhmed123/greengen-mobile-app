@@ -74,7 +74,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       print(images);
       print(images.length);
 
-      if (await ImageModel.uploadImage(
+      if (await ImageModel.uploadImages(
               // token: token,
               images: images,
               constructionSiteId: widget.constructionSiteId,

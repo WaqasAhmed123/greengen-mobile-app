@@ -93,74 +93,58 @@ class ImageModel {
 
   static List<ImageModel> imageModels = [];
 
-  static Future<bool> uploadImage(
-      {List<File>? images, String? folder, constructionSiteId}) async {
-    // String? token=await
-    // Create the multipart request
+  static Future<bool> uploadImages({
+    List<File>? images,
+    String? folder,
+    constructionSiteId,
+  }) async {
     String baseUrl = 'https://www.crm-crisaloid.com/api/construction/images';
-    // String token = await UserModel.getUserCredentials();
-
     final token = await UserModel.getToken();
-
-    // print(token);
     bool success = false;
 
-    var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
-    final headers = {"Authorization": "Bearer $token"};
+    try {
+      const batchSize = 20;
+      final totalImages = images?.length ?? 0;
+      final numBatches = (totalImages / batchSize).ceil();
 
-    // request.headers['Authorization'] = 'Bearer ${token}';
-    //  final headers = {
-    //         "Authorization": "Bearer $token",
-    //         "Content-Type": "multipart/form-data",
-    //         // "Content-Length": bytesData.length.toString(),
-    //         "Accept": "*/*",
-    //       };
-    request.headers.addAll(headers);
-    // 'Bearer ${await UserModel.getToken().toString()}';
+      for (var i = 0; i < numBatches; i++) {
+        var startIdx = i * batchSize;
+        var endIdx = (i + 1) * batchSize;
+        var batch = images!
+            .sublist(startIdx, endIdx > totalImages ? totalImages : endIdx);
 
-    // Add the image files to the request
-    for (var image in images!) {
-      request.files
-          .add(await http.MultipartFile.fromPath('images[]', image.path));
-    }
+        var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
+        final headers = {"Authorization": "Bearer $token"};
+        request.headers.addAll(headers);
 
-    request.fields['construction_site_id'] = constructionSiteId.toString();
-    request.fields['folder'] = folder!;
+        for (var image in batch) {
+          request.files
+              .add(await http.MultipartFile.fromPath('images[]', image.path));
+        }
 
-    var response = await request.send();
+        request.fields['construction_site_id'] = constructionSiteId.toString();
+        request.fields['folder'] = folder!;
 
-    // Check the response status
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      print('status code of image upload api${response.statusCode}');
-      // print(await response.stream);
-      var responseData = await response.stream.transform(utf8.decoder).join();
+        var response = await request.send();
 
-      print('Response of image upload api: $responseData');
-      var jsonResponse = json.decode(responseData);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          // Handle the response for each batch if needed
+          // For example, you can parse the response and update the imageModels list.
+          // var responseData = await response.stream.transform(utf8.decoder).join();
+          // var jsonResponse = json.decode(responseData);
+          // ...
+          success = true;
+        } else {
+          print('Failed to upload images. Status code: ${response.statusCode}');
+          success = false;
+          break; // Exit the loop if any batch fails to upload.
+        }
+      }
 
-      // Create an ImageModel object using the response data
-      var imageModel = ImageModel(
-        id: jsonResponse['id'],
-        // folderByRespnse: jsonResponse['folder'],
-        // constructionSiteId: jsonResponse['construction_site_id'],
-        // uploadedBy: jsonResponse['uploaded_by'],
-        // name: jsonResponse['name'],
-        // path: jsonResponse['path'],
-        // updatedAt: jsonResponse['updated_at'],
-        // createdAt: jsonResponse['created_at'],
-      );
-
-      // Append the ImageModel object to the list
-      imageModels.add(imageModel);
-      // print(respons.e)
-      // Image uploaded successfully
-      // print('Image uploaded');
-      print(imageModel);
-      print(images.length);
-      success = true;
       return success;
-    } else {
-      return success;
+    } catch (e) {
+      print('Error uploading images: $e');
+      return false;
     }
   }
 }

@@ -15,6 +15,15 @@ String baseUrl = 'https://crm-crisaloid.com';
 bool _downloadInProgress = false;
 bool _deleteInProgress = false;
 // bool _isImagesDeleted=false;
+
+String _truncateImageName(String name, {int maxLength = 15}) {
+  if (name.length > maxLength) {
+    return '${name.substring(0, maxLength)}...';
+  } else {
+    return name;
+  }
+}
+
 Widget buildImageWidget(
     {
     // int? index,
@@ -129,40 +138,45 @@ Widget buildImageWidget(
                         Expanded(
                           child: SizedBox(
                             width: double.infinity,
-                            child: Stack(children: [
-                              ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  topRight: Radius.circular(8),
-                                ),
-                                child: AspectRatio(
-                                  aspectRatio: 1.0,
-                                  child: Image.network(
-                                    "$baseUrl/construction-assets/$constructionSiteId/${image.path}",
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                          'assets/pictures/error_image.png');
-                                    },
-                                    fit: BoxFit.cover,
+                            child: IntrinsicWidth(
+                              child: Stack(children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),
                                   ),
-                                ),
-                              ),
-                              if (checkMarkList[index] == true)
-                                Positioned.fill(
-                                  // top: 10,
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      color: Colors.black.withOpacity(0.5),
-                                      child: const Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 32,
-                                      ),
+                                  child: AspectRatio(
+                                    aspectRatio: 1.5,
+                                    child: Image.network(
+                                      "$baseUrl/construction-assets/$constructionSiteId/${image.path}",
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.asset(
+                                          'assets/pictures/error_image.png',
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                            ]),
+                                if (checkMarkList[index] == true)
+                                  Positioned.fill(
+                                    // top: 10,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Container(
+                                        color: Colors.black.withOpacity(0.5),
+                                        child: const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 32,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ]),
+                            ),
                           ),
                         ),
                         // if (isSelected)
@@ -174,8 +188,9 @@ Widget buildImageWidget(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                DateFormat('dd/MM/yy').format(image
-                                    .createdAt), // Use the image's createdAt property
+                                _truncateImageName(image.name,
+                                    maxLength:
+                                        10), // Use the image's name property
                                 style: const TextStyle(
                                     color: Colors.grey, fontSize: 9),
                               ),
