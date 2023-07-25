@@ -26,8 +26,9 @@ class ImageModel {
     // required this.createdAt,
   });
 
-  static Future<void> deleteImage({int? imageId}) async {
-    const apiUrl =
+  static Future<bool> deleteImage({int? imageId}) async {
+    bool success = false;
+    const baseUrl =
         'https://www.crm-crisaloid.com/api/images'; // Replace with your API endpoint
 
     try {
@@ -35,17 +36,59 @@ class ImageModel {
       final headers = {'Authorization': 'Bearer $token'};
 
       final response =
-          await http.delete(Uri.parse('$apiUrl/$imageId'), headers: headers);
+          await http.delete(Uri.parse('$baseUrl/$imageId'), headers: headers);
 
       if (response.statusCode == 200) {
         print(response);
+        return success = true;
         print('Image deleted successfully');
       } else {
         print('Failed to delete image. Status code: ${response.statusCode}');
+        return success;
       }
     } catch (e) {
       print('Error deleting image: $e');
     }
+    return success;
+  }
+
+  static Future<void> deleteImages({List? imageIds}) async {
+    // bool success = false;
+
+    const baseUrl =
+        'https://www.crm-crisaloid.com/api/images'; // Replace with your API endpoint
+
+    try {
+      final token = await UserModel.getToken();
+      final headers = {'Authorization': 'Bearer $token'};
+
+      if (imageIds == null || imageIds.isEmpty) {
+        print('No image IDs provided for deletion.');
+      }
+
+      for (int imageId in imageIds!) {
+        try {
+          final response = await http.delete(Uri.parse('$baseUrl/$imageId'),
+              headers: headers);
+
+          if (response.statusCode == 200) {
+            // return success = true;
+
+            print('Image with ID $imageId deleted successfully');
+          } else {
+            // return success;
+            print(
+                'Failed to delete image with ID $imageId. Status code: ${response.statusCode}');
+          }
+        } catch (e) {
+          // return success;
+          print('Error deleting image with ID $imageId: $e');
+        }
+      }
+    } catch (e) {
+      print('Error deleting images: $e');
+    }
+    // return success;
   }
 
   static List<ImageModel> imageModels = [];
@@ -54,7 +97,7 @@ class ImageModel {
       {List<File>? images, String? folder, constructionSiteId}) async {
     // String? token=await
     // Create the multipart request
-    String apiUrl = 'https://www.crm-crisaloid.com/api/construction/images';
+    String baseUrl = 'https://www.crm-crisaloid.com/api/construction/images';
     // String token = await UserModel.getUserCredentials();
 
     final token = await UserModel.getToken();
@@ -62,7 +105,7 @@ class ImageModel {
     // print(token);
     bool success = false;
 
-    var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+    var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
     final headers = {"Authorization": "Bearer $token"};
 
     // request.headers['Authorization'] = 'Bearer ${token}';
@@ -113,6 +156,7 @@ class ImageModel {
       // Image uploaded successfully
       // print('Image uploaded');
       print(imageModel);
+      print(images.length);
       success = true;
       return success;
     } else {

@@ -7,7 +7,7 @@ import '../model/fetched_image_model.dart';
 import '../model/user_model.dart';
 
 class ApiServices {
-  static const String apiUrl = 'https://crm-crisaloid.com';
+  static const String baseUrl = 'https://crm-crisaloid.com';
 
   // static Future<Map<String, String>> getTokenHeader() async {
   //   final token = await UserModel.getToken();
@@ -25,7 +25,7 @@ class ApiServices {
     };
 
     final response = await http.post(
-      Uri.parse("$apiUrl/api/login"),
+      Uri.parse("$baseUrl/api/login"),
       // uri,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(data),
@@ -91,7 +91,7 @@ class ApiServices {
     };
     try {
       final response = await http.post(
-        Uri.parse("$apiUrl/api/logout"),
+        Uri.parse("$baseUrl/api/logout"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ class ApiServices {
 //fetching all users through api_______________________________________
   static Stream<List<AllUsers>> getUsersFromApi() async* {
     final response = await http.get(
-      Uri.parse("$apiUrl/api/constructionUser"),
+      Uri.parse("$baseUrl/api/constructionUser"),
       headers: {
         'Authorization': 'Bearer ${await UserModel.getToken()}',
         // ...tokenHeader
@@ -139,7 +139,7 @@ class ApiServices {
 
   // static Stream<List<FetchedImagesModel>> getImages({id, folderName}) async* {
   //   final response = await http
-  //       .post(Uri.parse("$apiUrl/api/construction-site/images/$id"), headers: {
+  //       .post(Uri.parse("$baseUrl/api/construction-site/images/$id"), headers: {
   //     'Authorization': 'Bearer ${await UserModel.getToken()}',
   //     // ...tokenHeader
   //   }, body: {
@@ -162,7 +162,7 @@ class ApiServices {
   // }
   static Future<List<FetchedImagesModel>> getImages({id, folderName}) async {
     final response = await http.post(
-      Uri.parse("$apiUrl/api/construction-site/images/$id"),
+      Uri.parse("$baseUrl/api/construction-site/images/$id"),
       headers: {
         'Authorization': 'Bearer ${await UserModel.getToken()}',
         // ...tokenHeader
@@ -172,15 +172,29 @@ class ApiServices {
       },
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonData = json.decode(response.body);
-      final List<FetchedImagesModel> imagesList =
-          (jsonData['imageFolder'] as Map<String, dynamic>)
-              .values
-              .map((json) => FetchedImagesModel.fromJson(json))
-              .toList();
-      print("status code of fetched images api${response.statusCode}");
-      print('Data of fetched images api $jsonData');
+
+      List<FetchedImagesModel> imagesList;
+
+      if (jsonData['imageFolder'] is List) {
+        imagesList = (jsonData['imageFolder'] as List)
+            .map((json) => FetchedImagesModel.fromJson(json))
+            .toList();
+        print("list data $jsonData");
+      } else if (jsonData['imageFolder'] is Map) {
+        imagesList = (jsonData['imageFolder'] as Map<String, dynamic>)
+            .values
+            .map((json) => FetchedImagesModel.fromJson(json))
+            .toList();
+        print("map data $jsonData");
+
+      } else {
+        throw Exception('Unexpected format for imageFolder data');
+      }
+
+      print("length of images ${imagesList.length}");
+      print("status code of fetched images api ${response.statusCode}");
       print(imagesList);
       return imagesList;
     } else {

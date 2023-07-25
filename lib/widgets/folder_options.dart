@@ -5,7 +5,7 @@ import '../screens/img_upload_scrn.dart';
 void showUploadOptions({
   required BuildContext context,
   String? selectedOption,
-   String? constructionSiteId,
+  String? constructionSiteId,
 }) {
   bool optionSelected = false; // Flag to check if an option is selected
 
@@ -13,7 +13,7 @@ void showUploadOptions({
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Upload Options'),
+        title: const Text('select options'),
         content: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Column(
@@ -74,7 +74,7 @@ void showUploadOptions({
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Close'),
+                child: const Text('vicino'),
               ),
               const Spacer(),
               ElevatedButton(
@@ -100,7 +100,7 @@ void showUploadOptions({
                     );
                   }
                 },
-                child: const Text('Upload'),
+                child: const Text('caricamento'),
               ),
             ],
           )

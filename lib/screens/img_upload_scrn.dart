@@ -12,6 +12,12 @@ import '../widgets/grid_view_Image.dart';
 class ImageUploadScreen extends StatefulWidget {
   String imageFolder;
   String? constructionSiteId;
+  String sentenceCase(String input) {
+    if (input.isEmpty) {
+      return '';
+    }
+    return input[0].toUpperCase() + input.substring(1).toLowerCase();
+  }
 
   ImageUploadScreen(this.imageFolder, {super.key, this.constructionSiteId});
 
@@ -21,8 +27,7 @@ class ImageUploadScreen extends StatefulWidget {
 
 class _ImageUploadScreenState extends State<ImageUploadScreen> {
   TextEditingController searchController = TextEditingController();
-  bool _uploadInProgress = false;
-
+  String? token;
   Future<List<FetchedImagesModel>> _fetchImages() async {
     return await ApiServices.getImages(
       id: widget.constructionSiteId,
@@ -32,6 +37,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
 
   @override
   void initState() {
+    // token = UserModel.getToken().toString();
+    // print(token);
     // TODO: implement initState
     // ApiServices.getImages(id: "1184", folderName: "post");
     super.initState();
@@ -44,7 +51,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
 
   // List<String> pickedImagesPath = [];
   List<File> images = [];
-
+  bool _uploadInProgress = false;
   Future<void> _getFromGallery() async {
     // List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
     List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
@@ -163,11 +170,11 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               const SizedBox(
                 height: 5,
               ),
-              const Row(
+              Row(
                 children: [
                   Text(
-                    "Immagini Post Opera",
-                    style: TextStyle(
+                    "Immagini ${widget.sentenceCase(widget.imageFolder)} Opera",
+                    style: const TextStyle(
                       fontSize: 15.0,
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -204,17 +211,19 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   ),
                   child: Align(
                     alignment: Alignment.center,
-                    child: _uploadInProgress // Show indicator based on flag
-                        ? const CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ) // Circular indicator when upload is in progress
-                        : Text(
-                            "CARRICA IMMAGINE",
-                            style: TextStyle(
-                              fontSize: 7,
-                              color: Theme.of(context).primaryColorDark,
-                            ),
-                          ),
+                    child:
+                        // _uploadInProgress // Show indicator based on flag
+                        //     ? const CircularProgressIndicator(
+                        //         strokeWidth: 2,
+                        //       ) // Circular indicator when upload is in progress
+                        //     :
+                        Text(
+                      "CARRICA IMMAGINE",
+                      style: TextStyle(
+                        fontSize: 7,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -226,42 +235,41 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               ),
               Container(
                 child: Expanded(
-                  child: FutureBuilder<List<FetchedImagesModel>>(
-                    future: _fetchImages(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasData) {
-                        final images = snapshot.data!;
-                        if (images.isEmpty) {
-                          return const Text('No Pictures');
-                        }
-                        return GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            mainAxisSpacing: 7,
-                            crossAxisSpacing: 7,
-                            mainAxisExtent: 200,
-                            crossAxisCount: 2,
-                          ),
-                          itemBuilder: (context, index) => buildImageWidget(
+                  child: Stack(
+                    children: [
+                      FutureBuilder<List<FetchedImagesModel>>(
+                        future: _fetchImages(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasData) {
+                            final images = snapshot.data!;
+                            if (images.isEmpty) {
+                              return const Center(child: Text('No Images'));
+                            }
+                            return buildImageWidget(
                               constructionSiteId: widget.constructionSiteId!,
-                              index: index,
                               images: images,
                               context: context,
-                              onDelete: onDelete),
-                          itemCount: images.length,
-                        );
-                      } else {
-                        if (!snapshot.hasData) {
-                          return const Center(child: Text('No Images'));
-                        } else {
-                          return const Text('Failed To Load Images');
-                        }
-                      }
-                    },
+                              onDelete: onDelete,
+                            );
+                          } else {
+                            if (!snapshot.hasData) {
+                              return const Center(child: Text('No Images'));
+                            } else {
+                              return const Text('Failed To Load Images');
+                            }
+                          }
+                        },
+                      ),
+                      if (_uploadInProgress)
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -272,7 +280,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     );
   }
 
-  void onDelete() {
+  onDelete() {
     setState(() {});
   }
 }
