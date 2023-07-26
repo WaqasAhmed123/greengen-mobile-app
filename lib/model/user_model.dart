@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:path/path.dart' as path;
 
 class UserModel {
-  static String? locallyStoredtoken;
-  static String? locallyStoredname;
+  // static String? locallyStoredtoken;
+  // static String? locallyStoredname;
   static String? locallyStoredemail;
 
   static int? id;
@@ -76,98 +76,5 @@ class UserModel {
     await prefs.remove("token");
   }
 
-//get token and saved in local storage
-  // static Future<bool> login({String? email, String? password}) async {
-  //   bool successful = false;
-  //   final Map<String, dynamic> data = {
-  //     'email': email,
-  //     'password': password,
-  //   };
 
-  //   final Uri uri = Uri.parse('https://crm-crisaloid.com/api/login');
-
-  //   final response = await http.post(
-  //     uri,
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: jsonEncode(data),
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     try {
-  //       final responseData = json.decode(response.body);
-  //       final user = responseData['user'];
-
-  //       // user.forEach((key, value) {
-  //       //   if (UserModel.contains(key)) {
-  //       //     setFieldValue(key, value);
-  //       //   }
-  //       // });
-
-  //       id = user['id'];
-  //       name = user['name'];
-  //       email = user['email'];
-  //       phone = user['phone'];
-  //       status = user['status'];
-  //       birthplace = user['birthplace'];
-  //       birthCountry = user['birth_country'];
-  //       dob = user['dob'];
-  //       residenceCity = user['residence_city'];
-  //       residenceProvince = user['residence_province'];
-  //       residence = user['residence'];
-  //       fiscalCode = user['fiscal code'];
-  //       professionalCollege = user['professional_college'];
-  //       commonCollege = user['common_college'];
-  //       registrationNumber = user['registration_numbe'];
-  //       originalPassword = user['originalpass'];
-  //       emailVerifiedAt = user['email_verified_at'];
-  //       createdAt = user['created_at'];
-  //       updatedAt = user['updated_at'];
-  //       token = responseData['token'];
-  //       // name = responseData['name'];
-  //       // email = responseData['email'];
-
-  //       // print(email);
-  //       // await removeToken();
-  //       await saveToken(token: token!);
-  //       await getToken();
-  //       return successful = true;
-  //     } catch (e) {
-  //       return successful;
-  //     }
-  //   }
-  //   return successful;
-  // }
-
-  // static Future<bool> logout() async {
-  //   bool successful = false;
-  //   final token = await UserModel.getToken();
-
-  //   final Map<String, dynamic> logoutdata = {
-  //     'token': token,
-  //   };
-  //   try {
-  //     final Uri uri = Uri.parse('https://crm-crisaloid.com/api/logout');
-
-  //     final response = await http.post(
-  //       uri,
-  //       headers: {
-  //         'Authorization': 'Bearer $token',
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: jsonEncode(logoutdata),
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       return successful = true;
-  //       // Logout successful
-  //     } else {
-  //       return successful;
-  //       // Logout failed
-  //     }
-  //   } catch (e) {
-  //     // Error occurred during the request
-  //     print('Error: $e');
-  //   }
-  //   return successful;
-  // }
 }
