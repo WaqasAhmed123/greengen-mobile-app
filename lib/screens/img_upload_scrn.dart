@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:greengen/model/image_%20model.dart';
+import 'package:greengen/model/image_model.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../apis/api_services.dart';
@@ -37,10 +37,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
 
   @override
   void initState() {
-    // token = UserModel.getToken().toString();
-    // print(token);
-    // TODO: implement initState
-    // ApiServices.getImages(id: "1184", folderName: "post");
     super.initState();
   }
 

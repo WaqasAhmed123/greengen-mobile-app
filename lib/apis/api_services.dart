@@ -85,36 +85,6 @@ class ApiServices {
     return successful;
   }
 
-  static Stream<List<AllUsers>> search({keyword}) async* {
-    // bool successful = false;
-    final Map<String, dynamic> data = {
-      // 'email': email,
-      'SearchKeyword': keyword,
-    };
-    print("Fanelli111 $keyword");
-
-    final response = await http.post(
-      Uri.parse("$baseUrl/api/search/cantieri"),
-      // uri,
-      headers: {
-        'Authorization': 'Bearer ${await UserModel.getToken()}',
-      },
-      body: jsonEncode(data),
-    );
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      // print(jsonData);
-      if (jsonData["total Results"] > 0) {
-        final userList = List<AllUsers>.from(jsonData['users']
-                .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
-            .toList();
-        yield userList;
-      }
-    } else {
-      throw Exception('Failed to load users from API');
-    }
-  }
-
 //logout api __________________________________________________________
   static Future<bool> logout() async {
     bool successful = false;
@@ -151,12 +121,73 @@ class ApiServices {
     return successful;
   }
 
+  // static Stream<List<AllUsers>> search({keyword}) async* {
+  //   // bool successful = false;
+  //   final Map<String, dynamic> data = {
+  //     // 'email': email,
+  //     'SearchKeyword': keyword,
+  //   };
+  //   print("$keyword");
+
+  //   final response = await http.post(
+  //     Uri.parse("$baseUrl/api/search/cantieri"),
+  //     // uri,
+  //     headers: {
+  //       'Authorization': 'Bearer ${await UserModel.getToken()}',
+  //     },
+  //     body: jsonEncode(data),
+  //   );
+  //   print(response.statusCode);
+  //   if (response.statusCode == 200) {
+  //     final jsonData = json.decode(response.body);
+  //     // print(jsonData);
+  //     if (jsonData["total Results"] > 0) {
+  //       final userList = List<AllUsers>.from(jsonData['users']
+  //               .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
+  //           .toList();
+  //       yield userList;
+  //     }
+  //   } else {
+  //     throw Exception('Failed to load users from API');
+  //   }
+  // }
+  static Future<List<AllUsers>> search({required String keyword}) async {
+    print("searched users");
+
+    final Map<String, dynamic> data = {
+      'SearchKeyword': keyword,
+    };
+
+    final response = await http.post(
+      Uri.parse("$baseUrl/api/search/cantieri"),
+      headers: {
+        'Authorization': 'Bearer ${await UserModel.getToken()}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+      if (jsonData["total Results"] > 0) {
+        final userList = List<AllUsers>.from(jsonData['users']
+                .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
+            .toList();
+        print(userList.length);
+        return userList;
+      } else {
+        return []; // Return an empty list if no results found
+      }
+    } else {
+      throw Exception('Failed to load users from API');
+    }
+  }
+
 //fetching all users through api_______________________________________
   static Stream<List<AllUsers>> getUsersFromApi() async* {
-    print(
-      UserModel.getToken(),
-    );
-    print("UserModel.getToken(),");
+    print("all users");
     final response = await http.get(
       Uri.parse("$baseUrl/api/constructionUser"),
       headers: {

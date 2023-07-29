@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/fetched_image_model.dart';
-import '../model/image_ model.dart';
+import '../model/image_model.dart';
 import '../model/user_model.dart';
 
 // Import the API service

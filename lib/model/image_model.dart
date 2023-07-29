@@ -40,7 +40,6 @@ class ImageModel {
       if (response.statusCode == 200) {
         print(response);
         return success = true;
-        print('Image deleted successfully');
       } else {
         print('Failed to delete image. Status code: ${response.statusCode}');
         return success;

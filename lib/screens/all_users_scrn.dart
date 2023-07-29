@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:greengen/apis/api_services.dart';
-import 'package:greengen/model/user_model.dart';
-import 'package:greengen/screens/login.dart';
 import 'package:greengen/widgets/appbar_show_menu.dart';
 
 import '../model/all_users.dart';
@@ -20,39 +18,17 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   final String _selectedOption = '';
   String? constructionSiteId;
   TextEditingController searchController = TextEditingController();
-  // void login() async {
-  //   print(UserModel.locallyStoredemail.toString());
-  //   print(UserModel.locallyStoredpassword.toString());
-  //   if (await ApiServices.login(
-  //         email: UserModel.locallyStoredemail.toString(),
-  //         password: UserModel.locallyStoredpassword.toString(),
-  //       ) ==
-  //       true) {
-  //   } else {
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const Login()),
-  //     );
-  //   }
-
-  //   // return "loggedIn";
-  // }
 
   StreamSubscription<List<AllUsers>>? _subscription;
-  StreamSubscription<List<AllUsers>>? _subscriptionSearch;
+  // StreamSubscription<List<AllUsers>>? _subscriptionSearch;
 
   @override
   void initState() {
     super.initState();
-    // if (UserModel.locallyStoredemail.toString().length > 5 &&
-    //     UserModel.locallyStoredpassword.toString().length > 5) {
-    //   print("condition ture users");
-    //   // login();
-    // }
-    // ;
-    searchController.addListener(_printLatestValue);
+
+    // searchController.addListener(_printLatestValue);
     _subscription = ApiServices.getUsersFromApi().listen((data) {});
-    _subscriptionSearch = ApiServices.search().listen((data) {});
+    // _subscriptionSearch = ApiServices.search().listen((data) {});
     // _subscription = ApiServices.search().listen((data) {
     //   // handle stream data
     // });
@@ -61,34 +37,36 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   @override
   void dispose() {
     _subscription?.cancel();
+    searchController.dispose();
     super.dispose();
   }
 
-  void search = (searchController) {
-    print(searchController);
-  };
+  // void search = (searchController) {
+  //   print(searchController);
+  // };
 
-  void handleSearch = () {
-    print("handlesearch");
-  };
+  // void handleSearch = () {
+  //   print("handlesearch");
+  // };
 
-  late Stream<List<AllUsers>> searchList;
-  StreamController<List<AllUsers>> _searchStreamController =
-      StreamController<List<AllUsers>>.broadcast();
+  // late Stream<List<AllUsers>> searchList;
+  // final StreamController<List<AllUsers>> _searchStreamController =
+  //     StreamController<List<AllUsers>>.broadcast();
 
   final tableTitleArr = [
     "NOME",
     "COMUNE",
     "VIA",
   ];
-  bool searchChk = false;
-  bool searchLoading = false;
-  int limit = 10;
-  bool loadMore = true;
-  bool loadMoreButtonVisible = false;
-  void _printLatestValue() {
-    print('Second text field: ${searchController.text}');
-  }
+  // bool searchChk = false;
+  // bool searchLoading = false;
+  // bool search = false;
+  // int limit = 10;
+  // bool loadMore = true;
+  // bool loadMoreButtonVisible = false;
+  // void _printLatestValue() {
+  //   print('Second text field: ${searchController.text}');
+  // }
 
   bool searchContainer = false;
 
@@ -148,31 +126,55 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
 
                 // width: MediaQuery.of(context).size.width * 0.9,
                 child: TextField(
+                  autofocus: false,
                   controller: searchController,
-                  onChanged: (text) async {
-                    // handleSearch();
-                    print('First text field: $text');
-                    setState(() {
-                      searchChk = !searchChk;
-                    });
-                    if (text.isNotEmpty) {
-                      setState(() {
-                        print("setstate1");
-                        // searchLoading = true;
-                        searchContainer = true;
-                      });
-                      // Stream<List<AllUsers>> searchList =
-                      await ApiServices.search(keyword: text);
-                      setState(() {
-                        print("setstate2");
-                        // searchLoading = false;
-                      });
-                    } else {
+                  onChanged: (text) {
+                    if (text.isEmpty) {
                       setState(() {
                         searchContainer = false;
                       });
                     }
                   },
+                  onEditingComplete: () {
+                    if (searchController.text.isEmpty) {
+                      setState(() {
+                        searchContainer = false;
+                      });
+                    }
+                    setState(() {
+                      searchContainer = true;
+                    });
+                    print(searchController.text);
+                    FocusScope.of(context).unfocus();
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    // ApiServices.search(keyword: searchController.text);
+                  },
+
+                  // onChanged: (text) async {
+                  //   // handleSearch();
+                  //   print('First text field: $text');
+                  //   setState(() {
+                  //     searchChk = !searchChk;
+                  //   });
+                  //   if (text.isNotEmpty) {
+                  //     setState(() {
+                  //       print("setstate1");
+                  //       // searchLoading = true;
+                  //       searchContainer = true;
+                  //     });
+                  //     // Stream<List<AllUsers>> searchList =
+
+                  //     ApiServices.search(keyword: text);
+                  //     setState(() {
+                  //       print("setstate2");
+                  //       // searchLoading = false;
+                  //     });
+                  //   } else {
+                  //     setState(() {
+                  //       searchContainer = false;
+                  //     });
+                  //   }
+                  // },
                   style: const TextStyle(fontSize: 10, color: Colors.grey),
                   decoration: const InputDecoration(
                     hintText: 'Ricerca veloce',
@@ -194,13 +196,19 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
             Visibility(
               visible: searchContainer,
               // child: searchList?.map((event) => null)
-              child: StreamBuilder<List<AllUsers>>(
-                stream: ApiServices.search(keyword: searchController.text),
+              child: FutureBuilder(
+                future: ApiServices.search(keyword: searchController.text),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<AllUsers>> snapshot) {
-                  print("streaam builder func run ${searchController.text}");
+                  print(searchController.text);
+                  // print("streaam builder func run ${searchController.text}");
                   if (snapshot.hasData) {
                     final userList = snapshot.data!;
+                    print(userList.length);
+                    if (userList.isEmpty) {
+                      return const Center(child: Text('Nessun utente trovato'));
+                    }
+
                     // loadMoreButtonVisible = true;a
 
                     // List<AllUsers> displayedUsers;
@@ -377,6 +385,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                 stream: ApiServices.getUsersFromApi(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<AllUsers>> snapshot) {
+                  // if (snapshot.data!.isEmpty) {}
                   if (snapshot.hasData) {
                     final userList = snapshot.data!;
 
