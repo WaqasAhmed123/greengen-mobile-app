@@ -39,6 +39,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   // }
 
   StreamSubscription<List<AllUsers>>? _subscription;
+  StreamSubscription<List<AllUsers>>? _subscriptionSearch;
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
     // ;
     searchController.addListener(_printLatestValue);
     _subscription = ApiServices.getUsersFromApi().listen((data) {});
+    _subscriptionSearch = ApiServices.search().listen((data) {});
     // _subscription = ApiServices.search().listen((data) {
     //   // handle stream data
     // });
@@ -71,6 +73,8 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   };
 
   late Stream<List<AllUsers>> searchList;
+  StreamController<List<AllUsers>> _searchStreamController =
+      StreamController<List<AllUsers>>.broadcast();
 
   final tableTitleArr = [
     "NOME",
@@ -148,20 +152,20 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                   onChanged: (text) async {
                     // handleSearch();
                     print('First text field: $text');
-                    // setState(() {
-                    //   searchChk = !searchChk;
-                    // });
+                    setState(() {
+                      searchChk = !searchChk;
+                    });
                     if (text.isNotEmpty) {
                       setState(() {
                         print("setstate1");
-                        searchLoading = true;
+                        // searchLoading = true;
                         searchContainer = true;
                       });
                       // Stream<List<AllUsers>> searchList =
                       await ApiServices.search(keyword: text);
                       setState(() {
                         print("setstate2");
-                        searchLoading = false;
+                        // searchLoading = false;
                       });
                     } else {
                       setState(() {
@@ -194,6 +198,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                 stream: ApiServices.search(keyword: searchController.text),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<AllUsers>> snapshot) {
+                  print("streaam builder func run ${searchController.text}");
                   if (snapshot.hasData) {
                     final userList = snapshot.data!;
                     // loadMoreButtonVisible = true;a
