@@ -74,7 +74,7 @@ void showUploadOptions({
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('vicino'),
+                child: const Text('esco'),
               ),
               const Spacer(),
               ElevatedButton(
@@ -100,7 +100,7 @@ void showUploadOptions({
                     );
                   }
                 },
-                child: const Text('caricamento'),
+                child: const Text('carica'),
               ),
             ],
           )

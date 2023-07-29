@@ -6,6 +6,10 @@ class UserModel {
   // static String? locallyStoredtoken;
   // static String? locallyStoredname;
   static String? locallyStoredemail;
+  static String? locallyStoredpassword;
+  static String? locallyStoredtoken;
+  static String? locallyStoredname;
+  static bool? locallyStoredlogincheck;
 
   static int? id;
   static String? name;
@@ -44,6 +48,26 @@ class UserModel {
     prefs.setString("email", email!);
     locallyStoredemail = prefs.getString("email") as String;
   }
+
+  static Future savePassword({String? password}) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("password", password!);
+    locallyStoredpassword = prefs.getString("password") as String;
+  }
+
+  static Future saveLogincheck({bool? logincheck}) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("logincheck", logincheck!);
+    locallyStoredlogincheck = prefs.getBool("logincheck") as bool;
+    print("locallyStoredlogincheck is set successfully");
+    print(locallyStoredlogincheck);
+  }
+
+  static Future saveName({String? name}) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("name", name!);
+    locallyStoredname = prefs.getString("name") as String;
+  }
   // static Future saveToken(
   //     {String? token, String? name, String? email}) async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -57,8 +81,8 @@ class UserModel {
     // token = prefs.get("token") as String;
     // locallyStoredtoken = prefs.getString("token") as String;
     // locallyStoredtoken = prefs.getString("name") as String;
-    // locallyStoredtoken = prefs.getString("email") as String;
-
+    locallyStoredtoken = prefs.getString("token") as String;
+    print(prefs.getString("token") as String);
     return prefs.getString("token") as String;
   }
 
@@ -71,10 +95,54 @@ class UserModel {
     // locallyStoredtoken = prefs.getString("email") as String;
   }
 
+  static Future getPassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    locallyStoredpassword = prefs.getString("password") as String;
+    // token = prefs.get("token") as String;
+    // locallyStoredtoken = prefs.getString("token") as String;
+    // locallyStoredtoken = prefs.getString("name") as String;
+    // locallyStoredtoken = prefs.getString("email") as String;
+  }
+
+  static Future getName() async {
+    final prefs = await SharedPreferences.getInstance();
+    locallyStoredname = prefs.getString("name") as String;
+    // token = prefs.get("token") as String;
+    // locallyStoredtoken = prefs.getString("token") as String;
+    // locallyStoredtoken = prefs.getString("name") as String;
+    // locallyStoredtoken = prefs.getString("email") as String;
+  }
+
+  static Future<bool> getLogincheck() async {
+    final prefs = await SharedPreferences.getInstance();
+    locallyStoredlogincheck = prefs.getBool("logincheck") as bool;
+    print("locallyStoredlogincheck form get login check");
+    print(locallyStoredlogincheck);
+    return prefs.getBool("logincheck") as bool;
+
+    // token = prefs.get("token") as String;
+    // locallyStoredtoken = prefs.getString("token") as String;
+    // locallyStoredtoken = prefs.getString("name") as String;
+    // locallyStoredtoken = prefs.getString("email") as String;
+  }
+
   static Future removeToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("token");
   }
 
+  static Future removeEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("email");
+  }
 
+  static Future removePassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("password");
+  }
+
+  static Future removeLogincheck() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("logincheck");
+  }
 }

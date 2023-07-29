@@ -70,6 +70,10 @@ class ApiServices {
         // print(email);
         // await removeToken();
         await UserModel.saveToken(token: UserModel.token!);
+        await UserModel.saveEmail(email: UserModel.email);
+        await UserModel.savePassword(password: password);
+        await UserModel.saveName(name: UserModel.name);
+        await UserModel.saveLogincheck(logincheck: true);
         await UserModel.getToken();
         print(await UserModel.getToken());
 
@@ -79,6 +83,36 @@ class ApiServices {
       }
     }
     return successful;
+  }
+
+  static Stream<List<AllUsers>> search({keyword}) async* {
+    // bool successful = false;
+    final Map<String, dynamic> data = {
+      // 'email': email,
+      'SearchKeyword': keyword,
+    };
+    print("Fanelli111 $keyword");
+
+    final response = await http.post(
+      Uri.parse("$baseUrl/api/search/cantieri"),
+      // uri,
+      headers: {
+        'Authorization': 'Bearer ${await UserModel.getToken()}',
+      },
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      // print(jsonData);
+      if (jsonData["total Results"] > 0) {
+        final userList = List<AllUsers>.from(jsonData['users']
+                .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
+            .toList();
+        yield userList;
+      }
+    } else {
+      throw Exception('Failed to load users from API');
+    }
   }
 
 //logout api __________________________________________________________
@@ -100,6 +134,10 @@ class ApiServices {
       );
 
       if (response.statusCode == 200) {
+        await UserModel.removeEmail();
+        await UserModel.removePassword();
+        await UserModel.removeToken();
+        await UserModel.removeLogincheck();
         return successful = true;
         // Logout successful
       } else {
@@ -115,6 +153,10 @@ class ApiServices {
 
 //fetching all users through api_______________________________________
   static Stream<List<AllUsers>> getUsersFromApi() async* {
+    print(
+      UserModel.getToken(),
+    );
+    print("UserModel.getToken(),");
     final response = await http.get(
       Uri.parse("$baseUrl/api/constructionUser"),
       headers: {
@@ -188,7 +230,6 @@ class ApiServices {
             .map((json) => FetchedImagesModel.fromJson(json))
             .toList();
         print("map data $jsonData");
-
       } else {
         throw Exception('Unexpected format for imageFolder data');
       }

@@ -5,7 +5,7 @@ import '../model/user_model.dart';
 import '../screens/login.dart';
 
 List<String> popUpOptionsList = [
-  UserModel.name.toString(),
+  UserModel.locallyStoredname.toString(),
   // UserModel.email.toString()=="null"?"NA":UserModel.email.toString(),
   UserModel.locallyStoredemail.toString(),
   "Ripristina",
@@ -44,6 +44,8 @@ appbarMenuItem({
                               builder: (context) => const Login()),
                           (route) => false,
                         );
+
+                        // await UserModel.removeToken();
                       }
                       // Handle logout option
                     }

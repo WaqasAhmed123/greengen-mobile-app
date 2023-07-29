@@ -147,29 +147,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 30,
-                child: TextField(
-                  controller: searchController,
-                  style: const TextStyle(fontSize: 10, color: Colors.grey),
-                  decoration: const InputDecoration(
-                    hintText: 'Cerca Immagine',
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    contentPadding: EdgeInsets.all(8.0),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
               Row(
                 children: [
                   Text(

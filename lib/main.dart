@@ -1,4 +1,12 @@
+// import 'dart:js_interop';
+
+// import 'dart:js_interop';
+
+// import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
+import 'package:greengen/model/user_model.dart';
+import 'package:greengen/screens/all_users_scrn.dart';
 import 'package:greengen/screens/login.dart';
 
 void main() {
@@ -23,52 +31,44 @@ class MyApp extends StatelessWidget {
       800: Color.fromRGBO(50, 205, 48, .9),
       900: Color.fromRGBO(50, 205, 48, 1),
     };
+    Future<bool> checkUserLogin() async {
+      print("condition is checking");
+      print(UserModel.getLogincheck().runtimeType);
+      print(UserModel.getLogincheck());
+      print("UserModel.locallyStoredlogincheck from main.dart");
+      await UserModel.getLogincheck();
+      await UserModel.getName();
+      await UserModel.getEmail();
+      // UserModel.getName();
+
+      if (UserModel.locallyStoredlogincheck == true) {
+        print("condition is ture");
+        return Future.value(true);
+      } else {
+        print("condition is false");
+        return Future.value(false);
+      }
+    }
+
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: const Color(0xff0076d32),
-        primaryColorLight: const Color(0XFF7db841),
-        primarySwatch: const MaterialColor(0XFF076D32, color),
-        // scaffoldBackgroundColor: Colors.white,
-        // textTheme: TextTheme(
-        //     titleMedium: textTheme['titleMedium'],
-        //     bodyMedium: textTheme['bodyMedium']),
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0XFF076D32)),
-        useMaterial3: true,
-      ),
-      home: const Login(),
-      // home: FutureBuilder<dynamic>(
-      //   future: UserModel.isLogin(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.waiting) {
-      //       // Show a loading indicator if the future is still loading
-      //       return CircularProgressIndicator();
-      //     } else if (snapshot.hasError) {
-      //       // Handle error if the future encounters an error
-      //       return Text('Error: ${snapshot.error}');
-      //     } else {
-      //       // Render the screens based on the result of the future
-      //       final bool isLoggedIn = snapshot.data ?? false;
-      //       return isLoggedIn ? const ImageUploadScreen() : const Login();
-      //     }
-      //   },
-      // ),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primaryColor: const Color(0xff0076d32),
+          primaryColorLight: const Color(0XFF7db841),
+          primarySwatch: const MaterialColor(0XFF076D32, color),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0XFF076D32)),
+          useMaterial3: true,
+        ),
+        home: FutureBuilder<bool>(
+            future:
+                checkUserLogin(), // function to check if the user is logged in or not
+            builder: (context, snapshot) {
+              if (snapshot.data == true) {
+                return AllUsersScreen();
+              } else {
+                return Login();
+              }
+            }));
   }
 }

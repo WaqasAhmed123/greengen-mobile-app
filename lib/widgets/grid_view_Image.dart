@@ -145,8 +145,11 @@ Widget buildImageWidget(
                                     topLeft: Radius.circular(8),
                                     topRight: Radius.circular(8),
                                   ),
-                                  child: AspectRatio(
-                                    aspectRatio: 1.5,
+                                  child: SizedBox(
+                                    width:
+                                        MediaQuery.sizeOf(context).width * 1.0,
+                                    height:
+                                        MediaQuery.sizeOf(context).height * 1.0,
                                     child: Image.network(
                                       "$baseUrl/construction-assets/$constructionSiteId/${image.path}",
                                       errorBuilder:
@@ -187,100 +190,100 @@ Widget buildImageWidget(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                _truncateImageName(image.name,
-                                    maxLength:
-                                        10), // Use the image's name property
-                                style: const TextStyle(
-                                    color: Colors.grey, fontSize: 9),
-                              ),
-                              const Spacer(),
                               Expanded(
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: PopupMenuButton(
-                                    itemBuilder: (BuildContext context) => [
-                                      PopupMenuItem(
-                                        child: InkWell(
-                                          splashColor: Colors.transparent,
-                                          onTap: () {
-                                            _downloadImage(
-                                                '$baseUrl/construction-assets/$constructionSiteId/${image.path}',
-                                                context); // Use the image's path
+                                child: Text(
+                                  _truncateImageName(image.name,
+                                      maxLength:
+                                          10), // Use the image's name property
+                                  style: const TextStyle(
+                                      color: Colors.grey, fontSize: 9),
+                                ),
+                              ),
+                              // const Spacer(),
+                              Align(
+                                // alignment: Alignment.topRight,
+                                child: PopupMenuButton(
+                                  padding: EdgeInsets.all(0.0),
+                                  icon: Icon(Icons.more_vert),
+                                  iconSize: 10.0,
+                                  itemBuilder: (BuildContext context) => [
+                                    PopupMenuItem(
+                                      child: InkWell(
+                                        splashColor: Colors.transparent,
+                                        onTap: () {
+                                          _downloadImage(
+                                              '$baseUrl/construction-assets/$constructionSiteId/${image.path}',
+                                              context); // Use the image's path
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.download,
+                                              color: Colors.blue,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              'Scarica',
+                                              style:
+                                                  TextStyle(color: Colors.blue),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      child: InkWell(
+                                        splashColor: Colors.transparent,
+                                        onTap: () async {
+                                          // removeImage();
+
+                                          if (await ImageModel.deleteImage(
+                                                  imageId: image.id) ==
+                                              true) {
+                                            onDelete();
+
+                                            // setState(
+                                            //   () {},
+                                            // );
+
                                             Navigator.of(context).pop();
-                                          },
-                                          child: const Row(
-                                            children: [
-                                              Icon(
-                                                Icons.download,
-                                                color: Colors.blue,
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text('Image deleted'),
+                                                duration: Duration(seconds: 2),
                                               ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                'Scarica',
+                                            );
+                                          } else {
+                                            Navigator.of(context).pop();
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'Failed to delete Image'),
+                                                duration: Duration(seconds: 2),
+                                              ),
+                                            );
+                                          }
+
+                                          // print("deleted");
+                                        },
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete,
+                                              color: Colors.blue,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text('Elimina',
                                                 style: TextStyle(
-                                                    color: Colors.blue),
-                                              ),
-                                            ],
-                                          ),
+                                                    color: Colors.blue)),
+                                          ],
                                         ),
                                       ),
-                                      PopupMenuItem(
-                                        child: InkWell(
-                                          splashColor: Colors.transparent,
-                                          onTap: () async {
-                                            // removeImage();
-
-                                            if (await ImageModel.deleteImage(
-                                                    imageId: image.id) ==
-                                                true) {
-                                              onDelete();
-
-                                              // setState(
-                                              //   () {},
-                                              // );
-
-                                              Navigator.of(context).pop();
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content:
-                                                      Text('Image deleted'),
-                                                  duration:
-                                                      Duration(seconds: 2),
-                                                ),
-                                              );
-                                            } else {
-                                              Navigator.of(context).pop();
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      'Failed to delete Image'),
-                                                  duration:
-                                                      Duration(seconds: 2),
-                                                ),
-                                              );
-                                            }
-
-                                            // print("deleted");
-                                          },
-                                          child: const Row(
-                                            children: [
-                                              Icon(
-                                                Icons.delete,
-                                                color: Colors.blue,
-                                              ),
-                                              SizedBox(width: 8),
-                                              Text('Elimina',
-                                                  style: TextStyle(
-                                                      color: Colors.blue)),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -298,7 +301,7 @@ Widget buildImageWidget(
                           child: Row(
                             children: [
                               Text(
-                                "${UserModel.name}",
+                                "${UserModel.locallyStoredname}",
                                 style: const TextStyle(
                                     color: Colors.black, fontSize: 9),
                               ),
