@@ -57,8 +57,8 @@ Widget buildImageWidget(
       return Stack(children: [
         GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisSpacing: 7,
-              crossAxisSpacing: 7,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
               mainAxisExtent: 200,
               crossAxisCount: 2,
             ),
@@ -185,7 +185,8 @@ Widget buildImageWidget(
                         // if (isSelected)
 
                         Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                          padding:
+                              const EdgeInsets.only(left: 8, top: 16, right: 8),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,11 +202,17 @@ Widget buildImageWidget(
                               ),
                               // const Spacer(),
                               Align(
-                                // alignment: Alignment.topRight,
+                                alignment: Alignment.topRight,
                                 child: PopupMenuButton(
                                   padding: EdgeInsets.all(0.0),
-                                  icon: Icon(Icons.more_vert),
-                                  iconSize: 10.0,
+                                  constraints: BoxConstraints(minWidth: 0.0),
+                                  child: Icon(
+                                    Icons.more_vert,
+                                    size: 18.0,
+                                  ),
+                                  // position: PopupMenuPosition.[10,23,],
+                                  // icon: Icon(Icons.more_vert),
+                                  // iconSize: 15.0,
                                   itemBuilder: (BuildContext context) => [
                                     PopupMenuItem(
                                       child: InkWell(
@@ -216,17 +223,20 @@ Widget buildImageWidget(
                                               context); // Use the image's path
                                           Navigator.of(context).pop();
                                         },
-                                        child: const Row(
+                                        child: Row(
                                           children: [
                                             Icon(
                                               Icons.download,
-                                              color: Colors.blue,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                             ),
                                             SizedBox(width: 8),
                                             Text(
                                               'Scarica',
-                                              style:
-                                                  TextStyle(color: Colors.blue),
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -269,16 +279,19 @@ Widget buildImageWidget(
 
                                           // print("deleted");
                                         },
-                                        child: const Row(
+                                        child: Row(
                                           children: [
                                             Icon(
                                               Icons.delete,
-                                              color: Colors.blue,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                             ),
                                             SizedBox(width: 8),
                                             Text('Elimina',
                                                 style: TextStyle(
-                                                    color: Colors.blue)),
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                )),
                                           ],
                                         ),
                                       ),
@@ -290,7 +303,7 @@ Widget buildImageWidget(
                           ),
                         ),
                         const Padding(
-                          padding: EdgeInsets.only(left: 8),
+                          padding: EdgeInsets.only(left: 8, top: 8),
                           child: Text(
                             "Caricato da:",
                             style: TextStyle(color: Colors.black, fontSize: 9),
@@ -331,7 +344,12 @@ Widget buildImageWidget(
             bottom: 0,
             right: 0,
             child: Container(
+              width: MediaQuery.sizeOf(context).width * 1.0,
+              height: 40,
+              color: Colors.white,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
                     onPressed: () async {

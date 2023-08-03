@@ -106,20 +106,24 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                       setState(() {
                         searchContainer = false;
                       });
+                    } else {
+                      setState(() {
+                        searchContainer = true;
+                      });
                     }
                   },
                   onEditingComplete: () {
-                    if (searchController.text.isEmpty) {
-                      setState(() {
-                        searchContainer = false;
-                      });
-                    }
-                    setState(() {
-                      searchContainer = true;
-                    });
-                    print(searchController.text);
+                    // if (searchController.text.isEmpty) {
+                    //   setState(() {
+                    //     searchContainer = false;
+                    //   });
+                    // }
+                    // setState(() {
+                    //   searchContainer = true;
+                    // });
+                    // print(searchController.text);
                     FocusScope.of(context).unfocus();
-                    FocusScope.of(context).requestFocus(FocusNode());
+                    // FocusScope.of(context).requestFocus(FocusNode());
                     // ApiServices.search(keyword: searchController.text);
                   },
 
@@ -179,7 +183,8 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                     final userList = snapshot.data!;
                     print(userList.length);
                     if (userList.isEmpty) {
-                      return const Center(child: Text('Nessun utente trovato'));
+                      // return const Center(child: Text('Nessun utente trovato'));
+                      return const Center(child: Text('No user found'));
                     }
 
                     // loadMoreButtonVisible = true;a
@@ -344,8 +349,9 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Center(
                         child: Text(
-                            // 'Failed To Load Users. Check your Internet Connection'
-                            "Impossibile caricare gli utenti. Controlla la tua connessione Internet"),
+                            'Failed To Load Users. Check your Internet Connection'
+                            // "Impossibile caricare gli utenti. Controlla la tua connessione Internet"
+                            ),
                       ),
                     );
                   } else {
@@ -539,9 +545,11 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                   } else if (snapshot.hasError) {
                     return const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 08),
-                      child: Center(child: Text(
-                          // 'Failed To Load Users. Check your Internet Connection'
-                          "Impossibile caricare gli utenti. Controlla la tua connessione Internet")),
+                      child: Center(
+                          child: Text(
+                              'Failed To Load Users. Check your Internet Connection'
+                              // "Impossibile caricare gli utenti. Controlla la tua connessione Internet"
+                              )),
                     );
                   } else {
                     return const Center(child: CircularProgressIndicator());

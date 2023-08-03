@@ -17,12 +17,50 @@ class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool loading = false;
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  void loginFunc() async {
+    setState(() {
+      loading = true;
+    });
+    if (await UserModel.isConnectedToInternet()) {
+      if (_formKey.currentState!.validate()) {
+        if (await ApiServices.login(
+          email: emailController.text,
+          password: passwordController.text,
+        )) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const AllUsersScreen()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login Failed'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No Internet Connection'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+    ;
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -103,40 +141,10 @@ class _LoginState extends State<Login> {
                     ),
                     Center(
                       child: containerButton(
-                        context: context,
-                        text: "Accedi",
-                        onTap: () async {
-                          if (await UserModel.isConnectedToInternet()) {
-                            if (_formKey.currentState!.validate()) {
-                              if (await ApiServices.login(
-                                email: emailController.text,
-                                password: passwordController.text,
-                              )) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AllUsersScreen()),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Login Failed'),
-                                    duration: Duration(seconds: 2),
-                                  ),
-                                );
-                              }
-                            }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('No Internet Connection'),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                        },
-                      ),
+                          context: context,
+                          text: "Accedi",
+                          onTap: loginFunc,
+                          loading: loading),
                     ),
                     TextButton(
                       onPressed: () {},

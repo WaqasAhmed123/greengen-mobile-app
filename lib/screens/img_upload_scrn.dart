@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:Greengen/widgets/appbar_show_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:Greengen/model/image_model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -131,6 +132,18 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 // height: 32,
               ),
               const Spacer(),
+              showPopUp(
+                context: context,
+                // scrName: "Casa",
+                // navFunc: () {
+                //   // Future.delayed(Duration(seconds: 1));
+                //   Navigator.pop(context);
+                //   // Navigator.push(
+                //   //     context,
+                //   //     MaterialPageRoute(
+                //   //         builder: (context) => const ImageUploadScreen()));
+                // }
+              ),
             ],
           ),
         ),
@@ -138,7 +151,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         automaticallyImplyLeading: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
