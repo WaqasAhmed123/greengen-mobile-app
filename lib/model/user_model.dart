@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 // import 'package:path/path.dart' as path;
 
 class UserModel {
@@ -144,5 +144,16 @@ class UserModel {
   static Future removeLogincheck() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("logincheck");
+  }
+
+  static Future<bool> isConnectedToInternet() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      return true; // Connected to mobile or Wi-Fi network
+    } else {
+      return false; // Not connected to any network
+    }
   }
 }

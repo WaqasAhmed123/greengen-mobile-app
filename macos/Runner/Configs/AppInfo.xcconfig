@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = greengen
+PRODUCT_NAME = Greengen
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.greengen
+PRODUCT_BUNDLE_IDENTIFIER = com.example.Greengen
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.

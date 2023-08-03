@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:greengen/model/user_model.dart';
+import 'package:Greengen/model/user_model.dart';
 import 'package:http/http.dart' as http;
 
 class ImageModel {

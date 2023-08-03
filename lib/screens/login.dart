@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:greengen/apis/api_services.dart';
-import 'package:greengen/widgets/container_button.dart';
-import 'package:greengen/widgets/input_field.dart';
+import 'package:Greengen/apis/api_services.dart';
+import 'package:Greengen/widgets/container_button.dart';
+import 'package:Greengen/widgets/input_field.dart';
 
 import '../model/user_model.dart';
 import 'all_users_scrn.dart';
@@ -71,7 +71,7 @@ class _LoginState extends State<Login> {
                         children: [
                           inputField(
                             context: context,
-                            hintText: "pasquale.greengen@gmail.com",
+                            hintText: "pasquale.Greengen@gmail.com",
                             controller: emailController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -106,30 +106,34 @@ class _LoginState extends State<Login> {
                         context: context,
                         text: "Accedi",
                         onTap: () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (await ApiServices.login(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                ) ==
-                                true) {
-                              // await UserModel.saveToken(
-                              //     token: emailController.text);
-                              
-
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AllUsersScreen()),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Login Failed'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
+                          if (await UserModel.isConnectedToInternet()) {
+                            if (_formKey.currentState!.validate()) {
+                              if (await ApiServices.login(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              )) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AllUsersScreen()),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Login Failed'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              }
                             }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('No Internet Connection'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
                           }
                         },
                       ),

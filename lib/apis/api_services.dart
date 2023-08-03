@@ -204,7 +204,7 @@ class ApiServices {
           .toList();
       yield userList;
     } else {
-      throw Exception('Failed to load users from API');
+      throw Exception('Failed To Load Users');
     }
   }
 

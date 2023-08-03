@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:greengen/model/image_model.dart';
+import 'package:Greengen/model/image_model.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../apis/api_services.dart';

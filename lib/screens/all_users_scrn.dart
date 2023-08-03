@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:greengen/apis/api_services.dart';
-import 'package:greengen/widgets/appbar_show_menu.dart';
+import 'package:Greengen/apis/api_services.dart';
+import 'package:Greengen/widgets/appbar_show_menu.dart';
 
 import '../model/all_users.dart';
 import '../widgets/folder_options.dart';
@@ -20,18 +20,12 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
   TextEditingController searchController = TextEditingController();
 
   StreamSubscription<List<AllUsers>>? _subscription;
-  // StreamSubscription<List<AllUsers>>? _subscriptionSearch;
 
   @override
   void initState() {
     super.initState();
 
-    // searchController.addListener(_printLatestValue);
     _subscription = ApiServices.getUsersFromApi().listen((data) {});
-    // _subscriptionSearch = ApiServices.search().listen((data) {});
-    // _subscription = ApiServices.search().listen((data) {
-    //   // handle stream data
-    // });
   }
 
   @override
@@ -41,32 +35,11 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
     super.dispose();
   }
 
-  // void search = (searchController) {
-  //   print(searchController);
-  // };
-
-  // void handleSearch = () {
-  //   print("handlesearch");
-  // };
-
-  // late Stream<List<AllUsers>> searchList;
-  // final StreamController<List<AllUsers>> _searchStreamController =
-  //     StreamController<List<AllUsers>>.broadcast();
-
   final tableTitleArr = [
     "NOME",
     "COMUNE",
     "VIA",
   ];
-  // bool searchChk = false;
-  // bool searchLoading = false;
-  // bool search = false;
-  // int limit = 10;
-  // bool loadMore = true;
-  // bool loadMoreButtonVisible = false;
-  // void _printLatestValue() {
-  //   print('Second text field: ${searchController.text}');
-  // }
 
   bool searchContainer = false;
 
@@ -367,7 +340,14 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                       ],
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Center(
+                        child: Text(
+                            // 'Failed To Load Users. Check your Internet Connection'
+                            "Impossibile caricare gli utenti. Controlla la tua connessione Internet"),
+                      ),
+                    );
                   } else {
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -557,7 +537,12 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                       ],
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 08),
+                      child: Center(child: Text(
+                          // 'Failed To Load Users. Check your Internet Connection'
+                          "Impossibile caricare gli utenti. Controlla la tua connessione Internet")),
+                    );
                   } else {
                     return const Center(child: CircularProgressIndicator());
                   }

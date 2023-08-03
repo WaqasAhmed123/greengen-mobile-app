@@ -5,9 +5,9 @@
 // import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
-import 'package:greengen/model/user_model.dart';
-import 'package:greengen/screens/all_users_scrn.dart';
-import 'package:greengen/screens/login.dart';
+import 'package:Greengen/model/user_model.dart';
+import 'package:Greengen/screens/all_users_scrn.dart';
+import 'package:Greengen/screens/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Greengen',
         theme: ThemeData(
           primaryColor: const Color(0xff0076d32),
           primaryColorLight: const Color(0XFF7db841),

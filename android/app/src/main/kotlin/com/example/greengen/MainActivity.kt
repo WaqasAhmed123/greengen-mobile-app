@@ -1,4 +1,4 @@
-package com.example.greengen
+package com.example.Greengen
 
 import io.flutter.embedding.android.FlutterActivity
 
