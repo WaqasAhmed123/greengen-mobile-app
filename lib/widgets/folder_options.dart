@@ -13,7 +13,7 @@ void showUploadOptions({
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('select options'),
+        title: const Text('Scegli categoria'),
         content: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Column(
@@ -74,7 +74,7 @@ void showUploadOptions({
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('esco'),
+                child: const Text('esci'),
               ),
               const Spacer(),
               ElevatedButton(

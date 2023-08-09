@@ -168,7 +168,7 @@ class ApiServices {
     );
 
     if (response.statusCode == 200) {
-      print(response.statusCode);
+      print('1111${response.statusCode}');
       final jsonData = json.decode(response.body);
       print(jsonData);
       if (jsonData["total Results"] > 0) {
@@ -181,6 +181,10 @@ class ApiServices {
         return []; // Return an empty list if no results found
       }
     } else {
+      (e) {
+        // Error occurred during the request
+        print('search Error : $e');
+      };
       throw Exception('Failed to load users from API');
     }
   }
@@ -188,23 +192,31 @@ class ApiServices {
 //fetching all users through api_______________________________________
   static Stream<List<AllUsers>> getUsersFromApi() async* {
     print("all users");
-    final response = await http.get(
-      Uri.parse("$baseUrl/api/constructionUser"),
-      headers: {
-        'Authorization': 'Bearer ${await UserModel.getToken()}',
-        // ...tokenHeader
-      },
-    );
+    if (await UserModel.isConnectedToInternet()) {
+      final response = await http.get(
+        Uri.parse("$baseUrl/api/constructionUser"),
+        headers: {
+          'Authorization': 'Bearer ${await UserModel.getToken()}',
+          // ...tokenHeader
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      // print(jsonData);
-      final userList = List<AllUsers>.from(jsonData['users']
-              .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
-          .toList();
-      yield userList;
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        // print(jsonData);
+        final userList = List<AllUsers>.from(jsonData['users']
+                .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
+            .toList();
+        yield userList;
+      } else {
+        (e) {
+          // Error occurred during the request
+          print('user list Error: $e');
+        };
+        throw Exception('Failed To Load Users');
+      }
     } else {
-      throw Exception('Failed To Load Users');
+      throw Exception('Failed To Load Users. Check your Internet Connection');
     }
   }
 

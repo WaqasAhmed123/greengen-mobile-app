@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:Greengen/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:Greengen/apis/api_services.dart';
 import 'package:Greengen/widgets/appbar_show_menu.dart';
 
 import '../model/all_users.dart';
+import 'package:Greengen/widgets/container_button.dart';
+
 import '../widgets/folder_options.dart';
 
 class AllUsersScreen extends StatefulWidget {
@@ -40,7 +43,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
     "COMUNE",
     "VIA",
   ];
-
+  String chkString = "annas";
   bool searchContainer = false;
 
   @override
@@ -84,7 +87,7 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
               width: MediaQuery.of(context).size.width * 1.0,
               padding: const EdgeInsets.only(top: 8),
               child: const Text(
-                "Elenco utenti",
+                "Elenco cantieri",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 32,
@@ -345,6 +348,8 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                       ],
                     );
                   } else if (snapshot.hasError) {
+                    print("snapshot11111");
+                    print(snapshot);
                     return const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Center(
@@ -542,8 +547,13 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                           ),
                       ],
                     );
-                  } else if (snapshot.hasError) {
-                    return const Padding(
+                  } else if (snapshot.error
+                          .toString()
+                          .contains("Network is unreachable") ||
+                      snapshot.error
+                          .toString()
+                          .contains("Check your Internet Connection")) {
+                    return Padding(
                       padding: EdgeInsets.symmetric(horizontal: 08),
                       child: Center(
                           child: Text(
@@ -551,6 +561,69 @@ class _AllUsersScreenState extends State<AllUsersScreen> {
                               // "Impossibile caricare gli utenti. Controlla la tua connessione Internet"
                               )),
                     );
+                  } else if (snapshot.hasError) {
+                    // return Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 08),
+                    //   child: Center(
+                    //       child: Text('${snapshot.error.toString()}'
+                    //           // "Impossibile caricare gli utenti. Controlla la tua connessione Internet"
+                    //           )),
+                    // );
+                    // Future<void> _showErrorDialog() async {
+                    //   return showDialog<void>(
+                    //       context: context,
+                    //       barrierDismissible: false,
+                    //       builder: (BuildContext context) {
+                    return Builder(builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text(
+                          'Login expired',
+                          textAlign: TextAlign.center,
+                          // style: TextStyle(),
+                        ),
+                        content: Text(
+                            'Your login session has expired. Please log in again to continue.'),
+                        actions: <Widget>[
+                          containerButton(
+                              context: context,
+                              text: "Accedi",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Login()),
+                                );
+                              },
+                              alert: true
+                              // loading: loading
+                              ),
+                        ],
+                      );
+                    });
+                    // return AlertDialog(
+                    //   title: Text('Login expired'),
+                    //   content: Text('Login Expired'),
+                    //   actions: <Widget>[
+                    //     TextButton(
+                    //       child: Text('OK'),
+                    //       onPressed: () {
+                    //         Navigator.of(context).pop(); // Close the dialog
+                    //       },
+                    //     ),
+                    //   ],
+                    // );
+                    //       });
+                    // }
+
+                    // _showErrorDialog();
+                    // return Container();
+                    // return const Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 08),
+                    //   child: Center(
+                    //       child: Text('Connection timeout, Please try again!'
+                    //           // "Impossibile caricare gli utenti. Controlla la tua connessione Internet"
+                    //           )),
+                    // );
                   } else {
                     return const Center(child: CircularProgressIndicator());
                   }
