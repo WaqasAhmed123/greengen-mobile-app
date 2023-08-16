@@ -8,13 +8,58 @@ import 'package:flutter/material.dart';
 import 'package:Greengen/model/user_model.dart';
 import 'package:Greengen/screens/all_users_scrn.dart';
 import 'package:Greengen/screens/login.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String _appBadgeSupported = 'Unknown';
+
+  @override
+  initState() {
+    super.initState();
+    initPlatformState();
+    _addBadge();
+  }
+
+  void _addBadge() {
+    FlutterAppBadger.updateBadgeCount(1);
+  }
+
+  initPlatformState() async {
+    String appBadgeSupported;
+    print(_appBadgeSupported);
+    try {
+      bool res = await FlutterAppBadger.isAppBadgeSupported();
+      print(res);
+      if (res) {
+        appBadgeSupported = 'Supported';
+      } else {
+        appBadgeSupported = 'Not supported';
+      }
+    } on PlatformException {
+      appBadgeSupported = 'Failed to get badge support.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _appBadgeSupported = appBadgeSupported;
+    });
+  }
 
   // This widget is the root of your application.
   @override
