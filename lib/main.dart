@@ -77,20 +77,13 @@ class _MyAppState extends State<MyApp> {
       900: Color.fromRGBO(50, 205, 48, 1),
     };
     Future<bool> checkUserLogin() async {
-      // print("condition is checking");
-      // print(UserModel.getLogincheck().runtimeType);
-      // print(UserModel.getLogincheck());
-      // print("UserModel.locallyStoredlogincheck from main.dart");
       await UserModel.getLogincheck();
       await UserModel.getName();
       await UserModel.getEmail();
-      // UserModel.getName();
 
       if (UserModel.locallyStoredlogincheck == true) {
-        // print("condition is ture");
         return Future.value(true);
       } else {
-        // print("condition is false");
         return Future.value(false);
       }
     }

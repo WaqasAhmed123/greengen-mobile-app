@@ -121,36 +121,6 @@ class ApiServices {
     return successful;
   }
 
-  // static Stream<List<AllUsers>> search({keyword}) async* {
-  //   // bool successful = false;
-  //   final Map<String, dynamic> data = {
-  //     // 'email': email,
-  //     'SearchKeyword': keyword,
-  //   };
-  //   print("$keyword");
-
-  //   final response = await http.post(
-  //     Uri.parse("$baseUrl/api/search/cantieri"),
-  //     // uri,
-  //     headers: {
-  //       'Authorization': 'Bearer ${await UserModel.getToken()}',
-  //     },
-  //     body: jsonEncode(data),
-  //   );
-  //   print(response.statusCode);
-  //   if (response.statusCode == 200) {
-  //     final jsonData = json.decode(response.body);
-  //     // print(jsonData);
-  //     if (jsonData["total Results"] > 0) {
-  //       final userList = List<AllUsers>.from(jsonData['users']
-  //               .map((json) => AllUsers.fromJson(json as Map<String, dynamic>)))
-  //           .toList();
-  //       yield userList;
-  //     }
-  //   } else {
-  //     throw Exception('Failed to load users from API');
-  //   }
-  // }
   static Future<List<AllUsers>> search({required String keyword}) async {
     print("searched users");
 
@@ -220,31 +190,6 @@ class ApiServices {
     }
   }
 
-  //____________________________________ get images
-
-  // static Stream<List<FetchedImagesModel>> getImages({id, folderName}) async* {
-  //   final response = await http
-  //       .post(Uri.parse("$baseUrl/api/construction-site/images/$id"), headers: {
-  //     'Authorization': 'Bearer ${await UserModel.getToken()}',
-  //     // ...tokenHeader
-  //   }, body: {
-  //     'folderName': '$folderName'
-  //   });
-
-  //   if (response.statusCode == 200) {
-  //     // print(response.statusCode);
-  //     final jsonData = json.decode(response.body);
-  //     // print(jsonData);
-  //     final List<FetchedImagesModel> imagesList =
-  //         (jsonData['imageFolder'] as Map<String, dynamic>)
-  //             .values
-  //             .map((json) => FetchedImagesModel.fromJson(json))
-  //             .toList();
-  //     yield imagesList;
-  //   } else {
-  //     throw Exception('Failed to load images from API');
-  //   }
-  // }
   static Future<List<FetchedImagesModel>> getImages({id, folderName}) async {
     final response = await http.post(
       Uri.parse("$baseUrl/api/construction-site/images/$id"),

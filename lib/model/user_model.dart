@@ -32,12 +32,6 @@ class UserModel {
   static String? updatedAt;
   static String? token;
 
-// handle local storage
-  // static Future isLogin() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.containsKey("token");
-  // }
-
   static Future saveToken({String? token}) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("token", token!);
@@ -78,39 +72,23 @@ class UserModel {
 
   static Future<String> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    // token = prefs.get("token") as String;
-    // locallyStoredtoken = prefs.getString("token") as String;
-    // locallyStoredtoken = prefs.getString("name") as String;
     locallyStoredtoken = prefs.getString("token") as String;
-    print(prefs.getString("token") as String);
     return prefs.getString("token") as String;
   }
 
   static Future getEmail() async {
     final prefs = await SharedPreferences.getInstance();
     locallyStoredemail = prefs.getString("email") as String;
-    // token = prefs.get("token") as String;
-    // locallyStoredtoken = prefs.getString("token") as String;
-    // locallyStoredtoken = prefs.getString("name") as String;
-    // locallyStoredtoken = prefs.getString("email") as String;
   }
 
   static Future getPassword() async {
     final prefs = await SharedPreferences.getInstance();
     locallyStoredpassword = prefs.getString("password") as String;
-    // token = prefs.get("token") as String;
-    // locallyStoredtoken = prefs.getString("token") as String;
-    // locallyStoredtoken = prefs.getString("name") as String;
-    // locallyStoredtoken = prefs.getString("email") as String;
   }
 
   static Future getName() async {
     final prefs = await SharedPreferences.getInstance();
     locallyStoredname = prefs.getString("name") as String;
-    // token = prefs.get("token") as String;
-    // locallyStoredtoken = prefs.getString("token") as String;
-    // locallyStoredtoken = prefs.getString("name") as String;
-    // locallyStoredtoken = prefs.getString("email") as String;
   }
 
   static Future<bool> getLogincheck() async {
@@ -119,11 +97,6 @@ class UserModel {
     print("locallyStoredlogincheck form get login check");
     print(locallyStoredlogincheck);
     return prefs.getBool("logincheck") as bool;
-
-    // token = prefs.get("token") as String;
-    // locallyStoredtoken = prefs.getString("token") as String;
-    // locallyStoredtoken = prefs.getString("name") as String;
-    // locallyStoredtoken = prefs.getString("email") as String;
   }
 
   static Future removeToken() async {

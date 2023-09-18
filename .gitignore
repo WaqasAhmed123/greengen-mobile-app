@@ -42,3 +42,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Exclude sensitive files
+lib/apis/api_services.dart
+lib/model/image_model.dart
+

@@ -6,29 +6,14 @@ import 'package:http/http.dart' as http;
 
 class ImageModel {
   final int id;
-  // final String folderByRespnse;
-  // final String constructionSiteId;
-  // final String uploadedBy;
-  // final String name;
-  // final String path;
-  // final String updatedAt;
-  // final String createdAt;
 
   ImageModel({
     required this.id,
-    // required this.folderByRespnse,
-    // required this.constructionSiteId,
-    // required this.uploadedBy,
-    // required this.name,
-    // required this.path,
-    // required this.updatedAt,
-    // required this.createdAt,
   });
 
   static Future<bool> deleteImage({int? imageId}) async {
     bool success = false;
-    const baseUrl =
-        'https://www.crm-crisaloid.com/api/images'; // Replace with your API endpoint
+    const baseUrl = 'https://www.crm-crisaloid.com/api/images';
 
     try {
       final token = await UserModel.getToken();
